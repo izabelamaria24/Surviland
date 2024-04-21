@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <SFML/Graphics.hpp>
 
 template <typename T>
 class GameTemplate {

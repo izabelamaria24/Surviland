@@ -10,12 +10,16 @@ class Game : public GameTemplate<Game> {
     
     static bool gameOver;
     static int time;
+
+    void render(sf::RenderWindow& window);
     
   public:
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
 
-    void play();
+    void start(sf::RenderWindow& window); // TODO
 
-    ~Game() = default;
-}
+    static void clearScreen(sf::RenderWindow& window);  // TODO
+
+    ~Game() override = default;
+};

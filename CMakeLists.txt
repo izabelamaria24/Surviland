@@ -134,6 +134,9 @@ add_executable(${PROJECT_NAME}
         headers/GameMenu.h
         headers/GameState.h
         src/Menu.cpp
+        src/Game.cpp
+        headers/Entity.h
+        headers/Board.h
 )
 
 ###############################################################################

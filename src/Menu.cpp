@@ -1,7 +1,9 @@
 #include "../headers/Menu.h"
+#include "../headers/Game.h"
 
-void Menu::changeInput(char c) {
-  userInput = c;
+void Menu::handlePlay(sf::RenderWindow& window) {
+    std::shared_ptr<Game> game = Game::getGameInstance();
+    game->start(window);
 }
 
 void Menu::display() {
@@ -12,7 +14,6 @@ void Menu::display() {
   if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
     // TODO throw exception
   }
-
 
   // game title
     sf::Text title("Surviland", font, 100);
@@ -33,6 +34,13 @@ void Menu::display() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::P) {
+                    handlePlay(window);
+                } else if (event.key.code == sf::Keyboard::S) {
+                    // TODO
+                }
+            }
         }
 
         // Clear the window
