@@ -23,7 +23,7 @@ class GameTemplate {
     GameTemplate() = default;
     
     virtual ~GameTemplate() = default;
-}
+};
 
 template <typename T>
 std::shared_ptr<T> GameTemplate<T>::gameInstance = nullptr;

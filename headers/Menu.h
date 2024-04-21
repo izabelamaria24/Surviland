@@ -18,9 +18,9 @@ class Menu : public GameTemplate<Menu> {
     Menu& operator=(const Menu&) = delete;
     Menu(const Menu&) = delete;
 
-    void init();
+    static void init();
     
-    void display();
+    static void display();
 
-    ~Menu() = default;
-}
+    ~Menu() override = default;
+};
