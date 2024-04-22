@@ -4,6 +4,7 @@ class Entity {
   private:
     int x;
     int y;
+    int hp;
 };
 
 //class EntityBuilder {

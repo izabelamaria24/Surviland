@@ -2,7 +2,9 @@
 #include "../headers/Game.h"
 
 void Menu::handlePlay(sf::RenderWindow& window) {
+    Board board(10, 10);
     std::shared_ptr<Game> game = Game::getGameInstance();
+    game->build(board);
     game->start(window);
 }
 

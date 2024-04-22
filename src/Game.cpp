@@ -14,9 +14,53 @@ void Game::start(sf::RenderWindow& window) {
                 window.close();
             // TODO handle game events
         }
+
+        window.clear();
+        render(window);
+        window.display();
     }
 }
 
 void Game::render(sf::RenderWindow &window) {
+  sf::Font font;
+  if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
+    // TODO throw exception
+  }
 
+    // Load the background image
+    sf::Texture playerTexture;
+    if (!playerTexture.loadFromFile("../assets/hogrider.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture dumbEnemyTexture;
+    if (!dumbEnemyTexture.loadFromFile("../assets/hogrider.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture smartEnemyTexture;
+    if (!smartEnemyTexture.loadFromFile("")); {
+        // TODO throw exception
+    }
+
+    sf::Texture spellTexture;
+    if (!spellTexture.loadFromFile("../assets/spell.png")) {
+        // TODO throw exception
+    }
+
+  const int cellSize = 100;
+//  const int boardHeight = cellSize * board.getHeight();
+//  const int boardWidth = cellSize * board.getWidth();
+
+    for (int i = 0; i < board.getHeight(); ++i) {
+        for (int j = 0; j < board.getWidth(); ++j) {
+            sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
+            cell.setPosition(i * cellSize, j * cellSize);
+            cell.setOutlineThickness(1);
+            cell.setOutlineColor(sf::Color::Red);
+            cell.setFillColor(sf::Color::White);
+            cell.setTexture(&playerTexture);
+            window.draw(cell);
+        }
+    }
 }
