@@ -39,7 +39,7 @@ void Game::render(sf::RenderWindow &window) {
     }
 
     sf::Texture smartEnemyTexture;
-    if (!smartEnemyTexture.loadFromFile("")); {
+    if (!smartEnemyTexture.loadFromFile("")) {
         // TODO throw exception
     }
 
@@ -59,7 +59,9 @@ void Game::render(sf::RenderWindow &window) {
             cell.setOutlineThickness(1);
             cell.setOutlineColor(sf::Color::Red);
             cell.setFillColor(sf::Color::White);
-            cell.setTexture(&playerTexture);
+
+            if (player.getX() == i && player.getX() == j)
+                cell.setTexture(&playerTexture);
             window.draw(cell);
         }
     }

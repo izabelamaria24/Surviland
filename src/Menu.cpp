@@ -3,8 +3,11 @@
 
 void Menu::handlePlay(sf::RenderWindow& window) {
     Board board(10, 10);
+    Player player(1, 0, 0, board.getHeight()  / 2, board.getWidth() / 2, 10);
+
     std::shared_ptr<Game> game = Game::getGameInstance();
-    game->build(board);
+
+    game->build(board, player);
     game->start(window);
 }
 

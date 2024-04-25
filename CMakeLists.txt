@@ -137,6 +137,8 @@ add_executable(${PROJECT_NAME}
         src/Game.cpp
         headers/Entity.h
         headers/Board.h
+        headers/Enemy.h
+        headers/EntityBuilder.h
 )
 
 ###############################################################################

@@ -1,30 +1,22 @@
 #pragma once
+#include <memory>
 
 class Entity {
   private:
     int x;
     int y;
     int hp;
-};
+public:
+    Entity() = default;
+    Entity(int x, int y, int hp) : x(x), y(y), hp(hp){};
 
-//class EntityBuilder {
-//
-//}
-//
-//class EnemyBuilder : public EntityBuilder {
-//
-//}
-//
-//class PowerupBuilder : public EntityBuilder {
-//
-//}
-//
-//class EntityFactory {
-//  static std::shared_ptr<Entity> createEnemy() {
-//
-//  }
-//
-//  static std::shared_ptr<Entity> createPowerup() {
-//
-//  }
-//}
+    [[nodiscard]] int getX() const {
+        return x;
+    }
+
+    [[nodiscard]] int getY() const {
+        return y;
+    }
+
+    friend class EntityBuilder;
+};

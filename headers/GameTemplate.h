@@ -20,9 +20,8 @@ class GameTemplate {
       return gameInstance;
     };
 
-  protected:
+   protected:
     GameTemplate() = default;
-    
     virtual ~GameTemplate() = default;
 };
 

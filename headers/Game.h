@@ -9,6 +9,7 @@ class Game : public GameTemplate<Game> {
 
 private:
     Board board;
+    Player player;
     bool gameOver = false;
     int time = 0;
     bool victory = false;
@@ -21,10 +22,9 @@ private:
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
 
-    void build(const Board& initialBoard) {
+    void build(const Board& initialBoard, const Player& initialPlayer) {
         board = initialBoard;
-
-//        board[board.getHeight() / 2][board.getWidth() / 2] = Player()
+        player = initialPlayer;
     }
 
     void start(sf::RenderWindow& window); // TODO
