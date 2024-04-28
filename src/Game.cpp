@@ -49,9 +49,6 @@ void Game::render(sf::RenderWindow &window) {
     }
 
   const int cellSize = 100;
-//  const int boardHeight = cellSize * board.getHeight();
-//  const int boardWidth = cellSize * board.getWidth();
-
     for (int i = 0; i < board.getHeight(); ++i) {
         for (int j = 0; j < board.getWidth(); ++j) {
             sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
@@ -65,4 +62,8 @@ void Game::render(sf::RenderWindow &window) {
             window.draw(cell);
         }
     }
+}
+
+bool Game::borders(int x, int y) {
+    return x >= 1 && x <= board.getWidth() && y >= 1 && y <= board.getHeight();
 }

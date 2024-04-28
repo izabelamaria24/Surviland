@@ -2,7 +2,7 @@
 #include <memory>
 
 class Entity {
-  private:
+protected:
     int x;
     int y;
     int hp;
