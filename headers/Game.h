@@ -23,7 +23,7 @@ private:
     static Player player;
 
     void render(sf::RenderWindow& window);
-    bool checkVictory() const;
+    [[nodiscard]] bool checkVictory() const;
     
   public:
     Game() = default;
@@ -50,6 +50,14 @@ private:
     void update();
 
     void win();
+
+    void markEnemies();
+
+    void moveEnemies();
+
+    void clearSpell();
+
+    bool checkCollision(int x, int y) const;
 
     static bool borders (int x, int y);
 

@@ -86,3 +86,67 @@ void Game::win() {
     gameOver = true;
     update();
 }
+
+void Game::markEnemies() {
+    for (const auto& enemy : enemies)
+        if (enemy.isAlive()) {
+            if (enemy.isHit()) board.update(enemy.getX(), enemy.getY(), 'x');
+            else board.update(enemy.getX(), enemy.getY(), '+');
+        }
+}
+
+void Game::moveEnemies() {
+    if (player.checkTime()) return;
+
+    for (auto& enemy : enemies){
+        enemy.changeDirection();
+        int x = enemy.getX(), y = enemy.getY();
+        enemy.goBack();
+
+        if (!(x == player.getX() && y == player.getY())) {
+            board.check(enemy.getX(), enemy.getY());
+            enemy.changeDirection();
+        } else {
+            if (enemy.isAlive() && !board.checkValue(enemy.getX(), enemy.getY(), 'L')) {
+                player.decreaseHp(enemy.attackDamage());
+            }
+        }
+    }
+}
+
+bool Game::checkCollision(int x, int y) const {
+    for (const auto &enemy : enemies) {
+        if (enemy.getX() == x && enemy.getY() == y) {
+            return true;
+        }
+    }
+    for (const auto &powerup : powerUps) {
+        if (powerup.getX() == x && powerup.getY() == y) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Game::clearSpell() {
+    char playerInitialState = board.getPlayer(player);
+
+    int rangeL = player.getY() - player.getSpell2(), rangeR = player.getY() + player.getSpell2();
+    int lineUp = player.getX() - 1, lineDown = player.getX() + 1;
+
+    for (int i = rangeL; i <= rangeR; i++)
+        if (borders(player.getX(), i)) board.update(player.getX(), i, '.');
+
+    rangeL++, rangeR--;
+
+    for (int i = 1; i <= player.getSpell2(); i++) {
+        for (int j = rangeL; j <= rangeR; j++) {
+            if (borders(lineUp, j)) board.update(lineUp, j, '.');
+
+            if (borders(lineDown, j)) board.update(lineDown, j, '.');
+        }
+        lineUp--, lineDown++, rangeL++, rangeR--;
+    }
+    board.update(player.getX(), player.getY(), playerInitialState);
+}
