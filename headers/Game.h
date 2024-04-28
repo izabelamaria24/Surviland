@@ -3,6 +3,10 @@
 #include "./GameTemplate.h"
 #include "Board.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "PowerUp.h"
+
+#include <iostream>
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
@@ -13,9 +17,13 @@ private:
     bool victory = false;
     std::string outputMessage;
 
-    void render(sf::RenderWindow& window);
+    std::vector<Enemy>enemies;
+    std::vector<PowerUp> powerUps;
     static Board board;
     static Player player;
+
+    void render(sf::RenderWindow& window);
+    bool checkVictory() const;
     
   public:
     Game() = default;
@@ -38,6 +46,10 @@ private:
     void start(sf::RenderWindow& window); // TODO
 
     void clearScreen(sf::RenderWindow& window);  // TODO
+
+    void update();
+
+    void win();
 
     static bool borders (int x, int y);
 

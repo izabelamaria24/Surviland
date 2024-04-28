@@ -67,3 +67,22 @@ void Game::render(sf::RenderWindow &window) {
 bool Game::borders(int x, int y) {
     return x >= 1 && x <= board.getWidth() && y >= 1 && y <= board.getHeight();
 }
+
+void Game::update() {
+    while (player.updateAvailable()) {
+        player.levelUp();
+//        availableAbilityUpgrades++;
+        player.payUpgrade();
+    }
+}
+
+bool Game::checkVictory() const {
+    return time >= 100;
+}
+
+void Game::win() {
+    victory = true;
+    outputMessage = "VICTORY!";
+    gameOver = true;
+    update();
+}
