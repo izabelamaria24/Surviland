@@ -139,6 +139,7 @@ add_executable(${PROJECT_NAME}
         headers/Board.h
         headers/Enemy.h
         headers/EntityBuilder.h
+        headers/PowerUp.h
 )
 
 ###############################################################################
