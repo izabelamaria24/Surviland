@@ -10,8 +10,8 @@ protected:
     bool hit;
 
 public:
-    virtual void changeDirection() = 0;
-    virtual void goBack() = 0;
+    virtual void changeDirection(Board& board, Player& player) = 0;
+    virtual void goBack(Board& board, Player& player) = 0;
 
     void modifyDirection(char newDir) {
         dir = newDir;
@@ -50,28 +50,21 @@ public:
     void decreaseAttackDamage() {
         dmg = 0;
     }
-
 };
 
 class DumbEnemy : public Enemy{
 public:
-    void changeDirection() override {
-        int height = Game::getBoard().getHeight();
-        int width = Game::getBoard().getWidth();
-
+    void changeDirection(Board& board, Player& player) override {
         if (dir == 'U' && x > 0) x--;
-        if (dir == 'D' && x <= height) x++;
+        if (dir == 'D' && x <= board.getHeight()) x++;
         if (dir == 'L' && y > 0) y--;
-        if (dir == 'R' && y <= width) y++;
+        if (dir == 'R' && y <= board.getWidth()) y++;
     }
 
-    void goBack() override {
-        int height = Game::getBoard().getHeight();
-        int width = Game::getBoard().getWidth();
-
-        if (dir == 'U' && x <= height) x++;
+    void goBack(Board& board, Player& player) override {
+        if (dir == 'U' && x <= board.getHeight()) x++;
         if (dir == 'D' && x > 0) x--;
-        if (dir == 'L' && y <= width) y++;
+        if (dir == 'L' && y <= board.getWidth()) y++;
         if (dir == 'R' && y > 0) y--;
     }
 };
@@ -81,12 +74,12 @@ private:
     int prevX{};
     int prevY{};
 
-    void track() {
+    void track(Player& player) {
         prevX = x;
         prevY = y;
 
-        int playerX = Game::getPlayer().getX();
-        int playerY = Game::getPlayer().getY();
+        int playerX = player.getX();
+        int playerY = player.getY();
 
         if (x > playerX) x--;
         else if (x < playerX) x++;
@@ -99,11 +92,11 @@ private:
 public:
     SmartEnemy() = default;
 
-    void changeDirection() override {
-        track();
+    void changeDirection(Board& board, Player& player) override {
+        track(player);
     }
 
-    void goBack() override {
+    void goBack(Board& board, Player& player) override {
         x = prevX;
         y = prevY;
     }

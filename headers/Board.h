@@ -20,8 +20,8 @@ enum class Category {
 
 class Board {
 private:
-    int width{};
-    int height{};
+    int width;
+    int height;
     std::vector<std::vector<char>>board;
     std::unordered_map<std::pair<int, int>, std::set<Category>, PairHash> marks;
 
@@ -55,7 +55,7 @@ public:
         else if (marks[{x, y}].find(Category::STOPWATCH) != marks[{x, y}].end()) update(x, y, 'f');
         else if (marks[{x, y}].find(Category::MONEY) != marks[{x, y}].end()) update(x, y, '$');
         else if (marks[{x, y}].find(Category::JACKPOT) != marks[{x, y}].end()) update(x, y, 'm');
-        else update(x, y, '.');
+//        else update(x, y, '.');
     }
 
     void markPowerUps() {

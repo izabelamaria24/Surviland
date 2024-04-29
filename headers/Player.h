@@ -10,10 +10,11 @@ private:
     int timeLeft = 0;
     int spellFeature1;
     int spellFeature2;
+    int ability;
+    bool unlockedSpell;
 
 public:
-    Player(int level, int armor, int totalMoney, int x, int y, int hp) : Entity(x, y, hp), level(level), armor(armor), totalMoney(totalMoney){};
-    Player() = default;
+    Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1), ability(1), unlockedSpell(false) {};
 
     void levelUp() {
         level++;
@@ -45,6 +46,14 @@ public:
 
     [[nodiscard]] int getSpell2() const {
         return spellFeature2;
+    }
+
+    [[nodiscard]] int getAbility() const {
+        return ability;
+    }
+
+    [[nodiscard]] bool availableSpell() const {
+        return unlockedSpell;
     }
 };
 

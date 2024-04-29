@@ -7,6 +7,7 @@
 #include "PowerUp.h"
 
 #include <iostream>
+#include <memory>
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
@@ -17,13 +18,18 @@ private:
     bool victory = false;
     std::string outputMessage;
 
-    std::vector<Enemy>enemies;
+    std::vector<std::shared_ptr<Enemy>>enemies;
     std::vector<PowerUp> powerUps;
     static Board board;
     static Player player;
 
     void render(sf::RenderWindow& window);
+
+    std::pair<int, int> checkPlayerDirection();
+
     [[nodiscard]] bool checkVictory() const;
+
+    void healEnemies();
     
   public:
     Game() = default;
@@ -55,9 +61,13 @@ private:
 
     void moveEnemies();
 
+    void drawSpell();
+
     void clearSpell();
 
-    bool checkCollision(int x, int y) const;
+    void clearAttack();
+
+    [[nodiscard]] bool checkCollision(int x, int y) const;
 
     static bool borders (int x, int y);
 

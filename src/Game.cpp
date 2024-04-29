@@ -89,9 +89,9 @@ void Game::win() {
 
 void Game::markEnemies() {
     for (const auto& enemy : enemies)
-        if (enemy.isAlive()) {
-            if (enemy.isHit()) board.update(enemy.getX(), enemy.getY(), 'x');
-            else board.update(enemy.getX(), enemy.getY(), '+');
+        if (enemy->isAlive()) {
+            if (enemy->isHit()) board.update(enemy->getX(), enemy->getY(), 'x');
+            else board.update(enemy->getX(), enemy->getY(), '+');
         }
 }
 
@@ -99,16 +99,17 @@ void Game::moveEnemies() {
     if (player.checkTime()) return;
 
     for (auto& enemy : enemies){
-        enemy.changeDirection();
-        int x = enemy.getX(), y = enemy.getY();
-        enemy.goBack();
+        enemy->changeDirection(board, player);
+        int x = enemy->getX(), y = enemy->getY();
+        enemy->goBack(board, player);
 
         if (!(x == player.getX() && y == player.getY())) {
-            board.check(enemy.getX(), enemy.getY());
-            enemy.changeDirection();
+            board.check(enemy->getX(), enemy->getY());
+            // TODO CHECK IF board[x][y] has powerup
+            enemy->changeDirection(board, player);
         } else {
-            if (enemy.isAlive() && !board.checkValue(enemy.getX(), enemy.getY(), 'L')) {
-                player.decreaseHp(enemy.attackDamage());
+            if (enemy->isAlive() && !board.checkValue(enemy->getX(), enemy->getY(), 'L')) {
+                player.decreaseHp(enemy->attackDamage());
             }
         }
     }
@@ -116,7 +117,7 @@ void Game::moveEnemies() {
 
 bool Game::checkCollision(int x, int y) const {
     for (const auto &enemy : enemies) {
-        if (enemy.getX() == x && enemy.getY() == y) {
+        if (enemy->getX() == x && enemy->getY() == y) {
             return true;
         }
     }
@@ -148,5 +149,85 @@ void Game::clearSpell() {
         }
         lineUp--, lineDown++, rangeL++, rangeR--;
     }
+    board.update(player.getX(), player.getY(), playerInitialState);
+}
+
+void Game::clearAttack() {
+    int addX = checkPlayerDirection().first, addY = checkPlayerDirection().second;
+    int newX = player.getX(), newY = player.getY();
+
+    const int dx[] = {-1, 1, 0, 0};
+    const int dy[] = {0, 0, -1, 1};
+
+    for (int i = 1; i <= player.getAbility(); i++) {
+        newX += addX;
+        newY += addY;
+
+        if (borders(newX, newY))
+            if (board.checkValue(newX, newY, 'L')) board.update(newX, newY, '.');
+    }
+
+    if (player.availableSpell()) clearSpell();
+
+    for (int i = 1; i <= board.getHeight(); i++)
+        for (int j = 1; j <= board.getHeight(); j++)
+            board.check(i, j);
+}
+
+std::pair<int, int> Game::checkPlayerDirection() {
+    char ch = board.getPlayer(player);
+    switch (ch) {
+        case '^':
+            return {-1, 0};
+        case '<':
+            return {0, -1};
+        case '>':
+            return {0, 1};
+        case 'v':
+            return {1, 0};
+        default:
+            return {0, 0};
+    }
+}
+
+void Game::healEnemies() {
+    for (auto it = enemies.begin(); it != enemies.end();) {
+        if ((*it)->isAlive()) {
+            (*it)->enemyRecover();
+            ++it;
+        } else {
+            it = enemies.erase(it);
+        }
+    }
+}
+
+void Game::drawSpell() {
+    char playerInitialState = board.getPlayer(player);
+
+    int rangeL = player.getY() - player.getSpell2(), rangeR = player.getY() + player.getSpell2();
+    int lineUp = player.getX() - 1, lineDown = player.getX() + 1;
+
+    for (int i = rangeL; i <= rangeR; i++)
+        if (borders(player.getX(), i)) {
+            if (!board.checkValue(player.getX(), i, 'L') && !board.checkValue(player.getX(), i, 'a') && !board.checkValue(player.getX(), i, 'f'))
+                board.update(player.getX(), i, 'O');
+        }
+
+    rangeL++, rangeR--;
+
+    for (int i = 1; i <= player.getSpell2(); i++) {
+        for (int j = rangeL; j <= rangeR; j++) {
+            if (borders(lineUp, j))
+                if (!board.checkValue(lineUp, j, 'L') && !board.checkValue(lineUp, j, 'a') && !board.checkValue(lineUp, j, 'f'))
+                    board.update(lineUp, j, 'O');
+
+            if (borders(lineDown, j))
+                if (!board.checkValue(lineDown, j, 'L') && !board.checkValue(lineDown, j, 'a') && !board.checkValue(lineDown, j, 'f'))
+                    board.update(lineDown, j, 'O');
+        }
+
+        lineUp--, lineDown++, rangeL++, rangeR--;
+    }
+
     board.update(player.getX(), player.getY(), playerInitialState);
 }
