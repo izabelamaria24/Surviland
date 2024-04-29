@@ -140,6 +140,8 @@ add_executable(${PROJECT_NAME}
         headers/Enemy.h
         headers/EntityBuilder.h
         headers/PowerUp.h
+        headers/Controller.h
+        src/Controller.cpp
 )
 
 ###############################################################################

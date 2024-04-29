@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "PowerUp.h"
+#include "Controller.h"
 
 #include <iostream>
 #include <memory>
@@ -13,6 +14,8 @@ class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
 
 private:
+    std::vector<std::shared_ptr<Observer>> observers;
+
     bool gameOver = false;
     int time = 0;
     bool victory = false;
