@@ -37,8 +37,6 @@ private:
     void collectStopwatch();
     void collectAllMoney();
 
-    void changeEnemiesDirection();
-
     void markEnemies();
     void markPowerUps();
 
@@ -70,6 +68,10 @@ public:
 
     void win();
 
+    void updateOutputMessage(const std::string& m) {
+        outputMessage = m;
+    }
+
     void addEnemy(int x, int y, int dmg, int hp, char dir, int type);
 
     void addPowerup(int x, int y, int hp, std::string& type);
@@ -85,6 +87,8 @@ public:
     void markEntities();
 
     void healEnemies();
+
+    void changeEnemiesDirection();
 
     void takePowerups(int x, int y, char sym);
 

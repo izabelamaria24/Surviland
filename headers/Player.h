@@ -13,13 +13,48 @@ private:
     int ability;
     int abilityRange;
     bool unlockedSpell;
+    int availableAbilityUpgrades;
+    int upgrade;
+    int spellUpgrade;
 
 public:
-    Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1), ability(1), abilityRange(1), unlockedSpell(false){};
-    Player() : Entity(-1, -1, -1), level(-1), armor(-1), totalMoney(-1), timeLeft(-1), spellFeature1(-1), spellFeature2(-1), ability(-1), abilityRange(-1), unlockedSpell(false){};
+    Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1),
+                    ability(1), abilityRange(1), unlockedSpell(false), availableAbilityUpgrades(0), upgrade(0), spellUpgrade(0) {};
+    Player() : Entity(-1, -1, -1), level(-1), armor(-1), totalMoney(-1), timeLeft(-1), spellFeature1(-1), spellFeature2(-1),
+                    ability(-1), abilityRange(-1), unlockedSpell(false), availableAbilityUpgrades(-1), upgrade(-1), spellUpgrade(0) {};
+
+    void move(int x, int y) {
+        this->x = x;
+        this->y = y;
+    }
 
     void levelUp() {
         level++;
+    }
+
+    void upgradeNormalAttack() {
+        ability *= 2;
+        abilityRange++;
+        upgrade++;
+        availableAbilityUpgrades--;
+    }
+
+    void upgradeSpellAttack() {
+        spellFeature1 *= 2;
+        spellFeature2++;
+        spellUpgrade++;
+    }
+
+    void unlockSpell() {
+        unlockedSpell = true;
+    }
+
+    [[nodiscard]] bool verifyAvailableUpgrades() const {
+        return availableAbilityUpgrades >= 1;
+    }
+
+    void substractUpgrade() {
+        availableAbilityUpgrades--;
     }
 
     void collectMoney(int amount) {

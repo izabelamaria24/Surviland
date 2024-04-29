@@ -96,8 +96,89 @@ private:
         game.healEnemies();
     }
 
-    void move(EventData& eventData);
-    void upgrade(EventData& eventData);
+    void move(EventData& eventData) {
+        char dir = eventData.dir;
+
+        game.clearAttack();
+        game.healEnemies();
+
+        int x = game.getPlayer().getX(), y = game.getPlayer().getY();
+
+        if (dir == 'L') {
+            if (!game.checkCollision(x, y - 1)) {
+                game.getBoard().update(x, y, '.');
+                if (y > 1) game.getPlayer().move(x, y - 1);
+            }
+
+            game.collectResources();
+            x = game.getPlayer().getX(), y = game.getPlayer().getY();
+            game.getBoard().update(x, y, '<');
+        }
+
+        if (dir == 'R') {
+            if (!game.checkCollision(x, y + 1)) {
+                game.getBoard().update(x, y, '.');
+                if (y < game.getBoard().getWidth()) game.getPlayer().move(x, y + 1);
+            }
+
+            game.collectResources();
+            x = game.getPlayer().getX(), y = game.getPlayer().getY();
+            game.getBoard().update(x, y, '>');
+        }
+
+        if (dir == 'D') {
+            if (!game.checkCollision(x + 1, y)) {
+                game.getBoard().update(x, y, '.');
+                if (x < game.getBoard().getHeight()) game.getPlayer().move(x + 1, y);
+            }
+
+            game.collectResources();
+            x = game.getPlayer().getX(), y = game.getPlayer().getY();
+            game.getBoard().update(x, y, 'v');
+        }
+
+        if (dir == 'U') {
+            if (!game.checkCollision(x - 1, y)) {
+                game.getBoard().update(x, y, '.');
+                if (x > 1) game.getPlayer().move(x - 1, y);
+            }
+
+            game.collectResources();
+            x = game.getPlayer().getX(), y = game.getPlayer().getY();
+            game.getBoard().update(x, y, '^');
+        }
+
+        game.changeEnemiesDirection();
+        game.moveEnemies();
+        game.markEntities();
+    }
+
+    void upgrade(EventData& eventData) {
+        if (eventData.type == "L") {
+            if (!game.getPlayer().verifyAvailableUpgrades())
+                game.updateOutputMessage("Not enough Ability Points! Go and slay more monsters!");
+            else {
+                game.getPlayer().upgradeNormalAttack();
+                game.updateOutputMessage("Your ability grew stronger!");
+            }
+        }
+
+        if (eventData.type == "O") {
+            if (!game.getPlayer().verifyAvailableUpgrades())
+                game.updateOutputMessage("Not enough Ability Points! Go and slay more monsters!");
+            else {
+                if (!game.getPlayer().availableSpell())
+                    game.updateOutputMessage("You learnt a new spell!");
+                else {
+                    game.updateOutputMessage("Your ability grew stronger!");
+                    game.getPlayer().upgradeSpellAttack();
+                }
+
+                game.getPlayer().unlockSpell();
+                game.getPlayer().substractUpgrade();
+            }
+        }
+    }
 
 public:
     explicit PlayerController(Game& game) : Observer(game){}
