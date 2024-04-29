@@ -29,11 +29,7 @@ private:
 
     void render(sf::RenderWindow& window);
 
-    std::pair<int, int> checkPlayerDirection();
-
     [[nodiscard]] bool checkVictory() const;
-
-    void healEnemies();
 
     void collectMoney();
     void collectHP();
@@ -68,6 +64,8 @@ public:
 
     void clearScreen(sf::RenderWindow& window);  // TODO
 
+    std::pair<int, int> checkPlayerDirection();
+
     void update();
 
     void win();
@@ -86,7 +84,16 @@ public:
 
     void markEntities();
 
+    void healEnemies();
+
+    void takePowerups(int x, int y, char sym);
+
+    void attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive);
+
+
     void collectResources();
+
+    void resetHit();
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 

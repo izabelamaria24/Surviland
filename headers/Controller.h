@@ -14,8 +14,89 @@ public:
 
 class PlayerController : public Observer {
 private:
+    void spellAttack() {
+        int x = game.getPlayer().getX(), y = game.getPlayer().getY();
+        int spell2 = game.getPlayer().getSpell2();
+
+        int rangeL = y - spell2, rangeR = y + spell2;
+        int lineUp = x - 1, lineDown = x + 1;
+
+        for (int i = rangeL; i <= rangeR; i++)
+            if (game.borders(x, i)) {
+                bool enemyFound = false, stillAlive = false;
+                game.attackEnemies(x, i, 'O', enemyFound, stillAlive);
+                game.takePowerups(x, i, 'O');
+            }
+
+        rangeL++, rangeR--;
+
+        for (int i = 1; i <= spell2; i++) {
+            for (int j = rangeL; j <= rangeR; j++) {
+                if (game.borders(lineUp, j)) {
+                    bool enemyFound = false, stillAlive = false;
+                    game.attackEnemies(lineUp, j, 'O', enemyFound, stillAlive);
+                    game.takePowerups(lineUp, j, 'O');
+                }
+
+                if (game.borders(lineDown, j)) {
+                    bool enemyFound = false, stillAlive = false;
+                    game.attackEnemies(lineDown, j, 'O', enemyFound, stillAlive);
+                    game.takePowerups(lineDown, j, 'O');
+                }
+            }
+            lineUp--, lineDown++, rangeL++, rangeR--;
+        }
+    }
+
+    void attack(EventData& eventData) {
+        int addX = game.checkPlayerDirection().first, addY = game.checkPlayerDirection().second;
+        int newX = game.getPlayer().getX(), newY = game.getPlayer().getY();
+        int abilityRange = game.getPlayer().getRange();
+        bool unlockedSpell = game.getPlayer().availableSpell();
+
+        const int dx[] = {-1, 1, 0, 0};
+        const int dy[] = {0, 0, -1, 1};
+
+        for (int i = 1; i <= abilityRange; i++) {
+            newX += addX;
+            newY += addY;
+            if (game.borders(newX, newY)) {
+                bool enemyFound = false, stillAlive = false;
+                game.attackEnemies(newX, newY, 'L', enemyFound, stillAlive);
+                game.takePowerups(newX, newY, 'L');
+            }
+        }
+
+        if (unlockedSpell) spellAttack();
+        game.moveEnemies();
+
+        newX = game.getPlayer().getX(), newY = game.getPlayer().getY();
+
+        for (int i = 1; i <= abilityRange; i++) {
+            newX += addX;
+            newY += addY;
+
+            if (game.borders(newX, newY)) {
+                bool enemyFound = false, stillAlive = false;
+
+                game.attackEnemies(newX, newY, 'L', enemyFound, stillAlive);
+
+                if (!enemyFound || (enemyFound && !stillAlive))
+                    if (game.getBoard().powerUpExist(newX, newY))
+                        game.getBoard().update(newX, newY, 'L');
+            }
+        }
+
+        if (unlockedSpell) {
+            spellAttack();
+            // TODO drawSpell()
+        }
+
+        game.markEntities();
+        game.healEnemies();
+    }
+
     void move(EventData& eventData);
-    void attack(EventData& eventData);
     void upgrade(EventData& eventData);
 
 public:
@@ -33,7 +114,6 @@ public:
 
 class EnemyController : public Observer {
 private:
-
     void spawnDumbEnemy(EventData& eventData) {
         game.moveEnemies();
         game.addEnemy(eventData.x + 1, eventData.y + 1, eventData.dmg, eventData.hp, eventData.dir, 1);

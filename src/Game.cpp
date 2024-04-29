@@ -328,3 +328,43 @@ void Game::addPowerup(int x, int y, int hp, std::string &type) {
     auto newPowerup = std::make_shared<PowerUp>(x, y, hp, type);
     powerUps.emplace_back(newPowerup);
 }
+
+void Game::resetHit() {
+    for (auto &enemy: enemies)
+        enemy->undoHit();
+    for (auto& powerup : powerUps)
+        powerup->undoHit();
+}
+
+void Game::attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive) {
+    for (auto &enemy: enemies) {
+        if (enemy->getX() == x && enemy->getY() == y) {
+
+            if (!enemy->checkLastHit()) {
+                enemy->hitEnemy(sym, player.getAbility(), player.getSpell1(), player.availableSpell());
+                enemy->activateHit();
+                if (!enemy->isAlive()) board.increase(x, y, '$', 2);
+            }
+
+            enemyFound = true;
+            if (enemy->isAlive()) stillAlive = true;
+        }
+    }
+}
+
+void Game::takePowerups(int x, int y, char sym) {
+    for (auto &powerup: powerUps) {
+        if (powerup->getX() == x && powerup->getY() == y) {
+            if (!powerup->checkLastHit()) {
+                powerup->attack(sym, player.getAbility(), player.getSpell1(), player.availableSpell());
+                powerup->activateHit();
+            }
+            if (powerup->dead()) {
+                if (powerup->getType() == "H") board.increase(x, y, 'h', 1);
+                if (powerup->getType() == "A") board.increase(x, y, 'a', 1);
+                if (powerup->getType() == "M") board.increase(x, y, 'm', 1);
+                if (powerup->getType() == "F") board.increase(x, y, 'f', 1);
+            }
+        }
+    }
+}

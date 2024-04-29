@@ -8,9 +8,10 @@ protected:
     int dmg;
     char dir;
     bool hit;
+    bool lastHit;
 
 public:
-    Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false){}
+    Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false), lastHit(false){}
 
     virtual void changeDirection(Board& board, Player& player) = 0;
     virtual void goBack(Board& board, Player& player) = 0;
@@ -23,15 +24,27 @@ public:
         return dir;
     }
 
-//    void hitEnemy(char symbol) {
-//        hit = true;
-//        if (symbol == 'L') {
-//            hp-=ability;
-//            if (unlockedSpell) hp -= spellFeature1;
-//        }
-//        else hp -= spellFeature1;
-//        if (hp <= 0) decreaseAttackDamage();
-//    }
+    void activateHit() {
+        lastHit = true;
+    }
+
+    void undoHit() {
+        lastHit = false;
+    }
+
+    [[nodiscard]] bool checkLastHit() const {
+        return lastHit;
+    }
+
+    void hitEnemy(char symbol, int att1, int att2, bool spell) {
+        hit = true;
+        if (symbol == 'L') {
+            hp-=att1; // ability
+            if (spell) hp -= att2; // spellFeature1
+        }
+        else hp -= att2;
+        if (hp <= 0) decreaseAttackDamage();
+    }
 
     void enemyRecover() {
         hit = false;

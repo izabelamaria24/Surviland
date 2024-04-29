@@ -11,11 +11,12 @@ private:
     int spellFeature1;
     int spellFeature2;
     int ability;
+    int abilityRange;
     bool unlockedSpell;
 
 public:
-    Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1), ability(1), unlockedSpell(false){};
-    Player() : Entity(-1, -1, -1), level(-1), armor(-1), totalMoney(-1), timeLeft(-1), spellFeature1(-1), spellFeature2(-1), ability(-1), unlockedSpell(false){};
+    Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1), ability(1), abilityRange(1), unlockedSpell(false){};
+    Player() : Entity(-1, -1, -1), level(-1), armor(-1), totalMoney(-1), timeLeft(-1), spellFeature1(-1), spellFeature2(-1), ability(-1), abilityRange(-1), unlockedSpell(false){};
 
     void levelUp() {
         level++;
@@ -68,6 +69,10 @@ public:
 
     void resetStopwatch() {
         timeLeft = 4;
+    }
+
+    [[nodiscard]] int getRange() const {
+        return abilityRange;
     }
 };
 
