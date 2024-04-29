@@ -19,7 +19,7 @@ private:
     std::string outputMessage;
 
     std::vector<std::shared_ptr<Enemy>>enemies;
-    std::vector<PowerUp> powerUps;
+    std::vector<std::shared_ptr<PowerUp>> powerUps;
     static Board board;
     static Player player;
 
@@ -30,8 +30,17 @@ private:
     [[nodiscard]] bool checkVictory() const;
 
     void healEnemies();
-    
-  public:
+
+    void gainMoney();
+    void gainHP();
+    void gainArmor();
+
+    void changeEnemiesDirection();
+
+    void markEnemies();
+    void markPowerUps();
+
+public:
     Game() = default;
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
@@ -57,8 +66,6 @@ private:
 
     void win();
 
-    void markEnemies();
-
     void moveEnemies();
 
     void drawSpell();
@@ -66,6 +73,8 @@ private:
     void clearSpell();
 
     void clearAttack();
+
+    void markEntities();
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 

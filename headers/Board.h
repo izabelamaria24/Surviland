@@ -14,8 +14,12 @@
     JACKPOT - 5
 */
 
-enum class Category {
-    HEAL, ARMOR, STOPWATCH, MONEY, JACKPOT
+struct Category {
+    int heal;
+    int armor;
+    int jackpot;
+    int money;
+    int stopwatch;
 };
 
 class Board {
@@ -23,7 +27,7 @@ private:
     int width;
     int height;
     std::vector<std::vector<char>>board;
-    std::unordered_map<std::pair<int, int>, std::set<Category>, PairHash> marks;
+    std::unordered_map<std::pair<int, int>, Category, PairHash> marks;
 
 public:
     Board(int width, int height) : width(width), height(height){};
@@ -50,16 +54,42 @@ public:
     }
 
     void check(int x, int y) {
-        if (marks[{x, y}].find(Category::HEAL) != marks[{x, y}].end()) update(x, y, 'h');
-        else if (marks[{x, y}].find(Category::ARMOR) != marks[{x, y}].end()) update(x, y, 'a');
-        else if (marks[{x, y}].find(Category::STOPWATCH) != marks[{x, y}].end()) update(x, y, 'f');
-        else if (marks[{x, y}].find(Category::MONEY) != marks[{x, y}].end()) update(x, y, '$');
-        else if (marks[{x, y}].find(Category::JACKPOT) != marks[{x, y}].end()) update(x, y, 'm');
+        if (marks[{x, y}].heal) update(x, y, 'h');
+        else if (marks[{x, y}].armor) update(x, y, 'a');
+        else if (marks[{x, y}].stopwatch) update(x, y, 'f');
+        else if (marks[{x, y}].money) update(x, y, '$');
+        else if (marks[{x, y}].jackpot) update(x, y, 'm');
 //        else update(x, y, '.');
     }
 
+    void collect(int x, int y, char attribute, Player& player) {
+        if (attribute == 'h') {
+            player.collectHp(5);
+            marks[{x, y}].heal = 0;
+        }
+        if (attribute == 'a') {
+            player.collectArmor(5);
+            marks[{x, y}].armor = 0;
+        }
+        if (attribute == 's') marks[{x, y}].stopwatch = 0;
+        if (attribute == 'm') marks[{x, y}].jackpot = 0;
+        if (attribute == '$') {
+            player.collectMoney(marks[{x, y}].money);
+            marks[{x, y}].money = 0;
+        }
+    }
+
+    void increase(int x, int y, char attribute, int amount) {
+        if (attribute == 'h') marks[{x, y}].heal += amount;
+        if (attribute == 'a') marks[{x, y}].armor += amount;
+        if (attribute == 's') marks[{x, y}].stopwatch += amount;
+        if (attribute == 'm') marks[{x, y}].jackpot += amount;
+        if (attribute == '$') marks[{x, y}].money += amount;
+    }
+
+
+
     void markPowerUps() {
-        // !! posibil bug
         for (int i = 1; i <= height; i++)
             for (int j = 1; j <= width; j++)
                 check(i, j);

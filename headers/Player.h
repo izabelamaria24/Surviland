@@ -20,8 +20,17 @@ public:
         level++;
     }
 
-    void gainMoney(int amount) {
+    void collectMoney(int amount) {
         totalMoney += amount;
+    }
+
+    void collectHp(int amount) {
+        hp += amount;
+        hp = std::min(10, hp);
+    }
+
+    void collectArmor(int amount) {
+        armor += amount;
     }
 
     [[nodiscard]] bool updateAvailable() const {

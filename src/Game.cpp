@@ -122,7 +122,7 @@ bool Game::checkCollision(int x, int y) const {
         }
     }
     for (const auto &powerup : powerUps) {
-        if (powerup.getX() == x && powerup.getY() == y) {
+        if (powerup->getX() == x && powerup->getY() == y) {
             return true;
         }
     }
@@ -230,4 +230,58 @@ void Game::drawSpell() {
     }
 
     board.update(player.getX(), player.getY(), playerInitialState);
+}
+
+void Game::gainMoney() {
+    board.collect(player.getX(), player.getY(), '$', player);
+}
+
+void Game::gainHP() {
+    board.collect(player.getX(), player.getY(), 'h', player);
+}
+
+void Game::gainArmor() {
+    board.collect(player.getX(), player.getY(), 'a', player);
+}
+
+void Game::changeEnemiesDirection() {
+    for (auto& enemy: enemies) {
+        if (auto smartEnemy = std::dynamic_pointer_cast<SmartEnemy>(enemy)) {
+            smartEnemy->modifyDirection(board.getPlayer(player));
+        }
+        else if (auto dumbEnemy = std::dynamic_pointer_cast<DumbEnemy>(enemy)) {
+            // do nothing
+        }
+        else {
+            // TODO THROW EXCEPTION
+        }
+    }
+}
+
+void Game::markPowerUps() {
+    for (auto it = powerUps.begin(); it != powerUps.end();) {
+        auto& pwrUp = *it;
+        std::string pwType = pwrUp->getType();
+
+        int add = 0;
+        if (pwrUp->dead()) add = 32;
+
+            if (pwType == "H")
+                board.update(pwrUp->getX(), pwrUp->getY(), 'H' + add);
+            if (pwrUp->getType() == "A")
+                board.update(pwrUp->getX(), pwrUp->getY(), 'A' + add);
+            if (pwrUp->getType() == "M")
+                board.update(pwrUp->getX(), pwrUp->getY(), 'M' + add);
+            if (pwrUp->getType() == "F")
+                board.update(pwrUp->getX(), pwrUp->getY(), 'F' + add);
+
+
+            if (pwrUp->dead()) it = powerUps.erase(it);
+            else it++;
+    }
+}
+
+void Game::markEntities() {
+    markPowerUps();
+    markEnemies();
 }
