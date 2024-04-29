@@ -64,5 +64,9 @@ public:
     [[nodiscard]] bool availableSpell() const {
         return unlockedSpell;
     }
+
+    void resetStopwatch() {
+        timeLeft = 4;
+    }
 };
 

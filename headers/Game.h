@@ -31,9 +31,11 @@ private:
 
     void healEnemies();
 
-    void gainMoney();
-    void gainHP();
-    void gainArmor();
+    void collectMoney();
+    void collectHP();
+    void collectArmor();
+    void collectStopwatch();
+    void collectAllMoney();
 
     void changeEnemiesDirection();
 
@@ -75,6 +77,8 @@ public:
     void clearAttack();
 
     void markEntities();
+
+    void collectResources();
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 

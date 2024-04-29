@@ -49,11 +49,31 @@ public:
         return board[player.getX()][player.getY()];
     }
 
+    bool checkMoney(int x, int y) {
+        return marks[{x, y}].money > 0;
+    }
+
+    bool checkArmor(int x, int y) {
+        return marks[{x, y}].armor > 0;
+    }
+
+    bool checkJackpot(int x, int y) {
+        return marks[{x, y}].jackpot > 0;
+    }
+
+    bool checkHP(int x, int y) {
+        return marks[{x, y}].heal > 0;
+    }
+
+    bool checkStopwatch(int x, int y) {
+        return marks[{x, y}].stopwatch > 0;
+    }
+
     [[nodiscard]] bool checkValue(int x, int y, char c) const {
         return board[x][y] == c;
     }
 
-    void check(int x, int y) {
+    void checkAndUpdate(int x, int y) {
         if (marks[{x, y}].heal) update(x, y, 'h');
         else if (marks[{x, y}].armor) update(x, y, 'a');
         else if (marks[{x, y}].stopwatch) update(x, y, 'f');
@@ -88,10 +108,14 @@ public:
     }
 
 
-
     void markPowerUps() {
         for (int i = 1; i <= height; i++)
             for (int j = 1; j <= width; j++)
-                check(i, j);
+                checkAndUpdate(i, j);
+    }
+
+    bool powerUpExist(int x, int y) {
+        return board[x][y] != 'H' && board[x][y] != 'A' && board[x][y] != 'M' && board[x][y] != 'F'
+               && board[x][y] != 'h' && board[x][y] != 'a' && board[x][y] != 'm' && board[x][y] != 'f';
     }
 };

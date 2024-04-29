@@ -104,7 +104,7 @@ void Game::moveEnemies() {
         enemy->goBack(board, player);
 
         if (!(x == player.getX() && y == player.getY())) {
-            board.check(enemy->getX(), enemy->getY());
+            board.checkAndUpdate(enemy->getX(), enemy->getY());
             // TODO CHECK IF board[x][y] has powerup
             enemy->changeDirection(board, player);
         } else {
@@ -171,7 +171,7 @@ void Game::clearAttack() {
 
     for (int i = 1; i <= board.getHeight(); i++)
         for (int j = 1; j <= board.getHeight(); j++)
-            board.check(i, j);
+            board.checkAndUpdate(i, j);
 }
 
 std::pair<int, int> Game::checkPlayerDirection() {
@@ -232,17 +232,45 @@ void Game::drawSpell() {
     board.update(player.getX(), player.getY(), playerInitialState);
 }
 
-void Game::gainMoney() {
+void Game::collectMoney() {
     board.collect(player.getX(), player.getY(), '$', player);
 }
 
-void Game::gainHP() {
+void Game::collectHP() {
     board.collect(player.getX(), player.getY(), 'h', player);
 }
 
-void Game::gainArmor() {
+void Game::collectArmor() {
     board.collect(player.getX(), player.getY(), 'a', player);
 }
+
+void Game::collectStopwatch() {
+    player.resetStopwatch();
+    board.collect(player.getX(), player.getY(), 'f', player);
+}
+
+void Game::collectAllMoney() {
+    for (int i = 1; i <= board.getHeight(); i++)
+        for (int j = 1; j <= board.getWidth(); j++)
+            if (board.checkMoney(i, j))
+            {
+                board.collect(i, j, '$', player);
+                board.update(i, j, '.');
+            }
+
+    board.collect(player.getX(), player.getY(), 'm', player);
+}
+
+void Game::collectResources() {
+    int x = player.getX(), y = player.getY();
+
+    if (board.checkMoney(x, y)) collectMoney();
+    if (board.checkArmor(x, y)) collectArmor();
+    if (board.checkStopwatch(x, y)) collectStopwatch();
+    if (board.checkHP(x, y)) collectHP();
+    if (board.checkJackpot(x, y)) collectAllMoney();
+}
+
 
 void Game::changeEnemiesDirection() {
     for (auto& enemy: enemies) {
