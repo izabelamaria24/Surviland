@@ -313,3 +313,18 @@ void Game::markEntities() {
     markPowerUps();
     markEnemies();
 }
+
+void Game::addEnemy(int x, int y, int dmg, int hp, char dir, int type) {
+    if (type == 1) {
+        auto newEnemy = std::make_shared<DumbEnemy>(x, y, dmg, hp, dir);
+        enemies.emplace_back(newEnemy);
+    } else {
+        auto newEnemy = std::make_shared<SmartEnemy>(x, y, dmg, hp, dir);
+        enemies.emplace_back(newEnemy);
+    }
+}
+
+void Game::addPowerup(int x, int y, int hp, std::string &type) {
+    auto newPowerup = std::make_shared<PowerUp>(x, y, hp, type);
+    powerUps.emplace_back(newPowerup);
+}

@@ -142,6 +142,7 @@ add_executable(${PROJECT_NAME}
         headers/PowerUp.h
         headers/Controller.h
         src/Controller.cpp
+        headers/EventData.h
 )
 
 ###############################################################################

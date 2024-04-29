@@ -5,7 +5,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "PowerUp.h"
-#include "Controller.h"
+#include "EventData.h"
+//#include "Controller.h"
 
 #include <iostream>
 #include <memory>
@@ -14,7 +15,7 @@ class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
 
 private:
-    std::vector<std::shared_ptr<Observer>> observers;
+//    std::vector<std::shared_ptr<Observer>> observers;
 
     bool gameOver = false;
     int time = 0;
@@ -23,8 +24,8 @@ private:
 
     std::vector<std::shared_ptr<Enemy>>enemies;
     std::vector<std::shared_ptr<PowerUp>> powerUps;
-    static Board board;
-    static Player player;
+    Board board;
+    Player player;
 
     void render(sf::RenderWindow& window);
 
@@ -50,15 +51,15 @@ public:
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
 
-    static Board& getBoard() {
+    Board& getBoard() {
         return board;
     }
 
-    static Player& getPlayer() {
+    Player& getPlayer() {
         return player;
     }
 
-    static void build(const Board& initialBoard, const Player& initialPlayer) {
+    void build(const Board& initialBoard, const Player& initialPlayer) {
         board = initialBoard;
         player = initialPlayer;
     }
@@ -70,6 +71,10 @@ public:
     void update();
 
     void win();
+
+    void addEnemy(int x, int y, int dmg, int hp, char dir, int type);
+
+    void addPowerup(int x, int y, int hp, std::string& type);
 
     void moveEnemies();
 
@@ -85,7 +90,7 @@ public:
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 
-    static bool borders (int x, int y);
+    bool borders (int x, int y);
 
     ~Game() override = default;
 };

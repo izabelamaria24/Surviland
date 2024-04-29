@@ -10,6 +10,8 @@ protected:
     bool hit;
 
 public:
+    Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false){}
+
     virtual void changeDirection(Board& board, Player& player) = 0;
     virtual void goBack(Board& board, Player& player) = 0;
 
@@ -54,6 +56,8 @@ public:
 
 class DumbEnemy : public Enemy{
 public:
+    DumbEnemy(int x, int y, int hp, int dmg, char dir) : Enemy(x, y, hp, dmg, dir){}
+
     void changeDirection(Board& board, Player& player) override {
         if (dir == 'U' && x > 0) x--;
         if (dir == 'D' && x <= board.getHeight()) x++;
@@ -90,7 +94,7 @@ private:
     }
 
 public:
-    SmartEnemy() = default;
+    SmartEnemy(int x, int y, int hp, int dmg, char dir) : Enemy(x, y, hp, dmg, dir){}
 
     void changeDirection(Board& board, Player& player) override {
         track(player);
