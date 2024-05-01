@@ -25,41 +25,117 @@ void Game::notifyObservers(EventData &eventData, const std::string &observerType
 }
 
 std::pair<int, int> Game::generateCoordinates() {
-    // TODO
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+
+    int width = board.getWidth();
+    int height = board.getHeight();
+
+    std::uniform_int_distribution<int> disX(1, width);
+    std::uniform_int_distribution<int> disY(1, height);
+    int x, y;
+
+    do {
+        x = disX(gen);
+        y = disY(gen);
+    } while (board.checkValue(x, y, '^') || board.checkValue(x, y, '<') || board.checkValue(x, y, 'v') || board.checkValue(x, y, '>'));
+
+    return std::make_pair(x, y);
+}
+
+std::pair<int, int> Game::generateEnemyAttributes() {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<int> dis(1, 10);
+
+    int hp = dis(gen), dmg = dis(gen);
+    return std::make_pair(hp, dmg);
+}
+
+char Game::generateDirection(EventData& eventData) {
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<int> dis(0, 4);
+
+    int val = dis(gen);
+    std::cout << val << '\n';
+    if (val == 0) eventData.dir = 'U';
+    if (val == 1) eventData.dir = 'D';
+    if (val == 2) eventData.dir = 'R';
+    if (val == 3) eventData.dir = 'L';
+}
+
+void Game::generate(EventData& eventData) {
+    std::pair<int, int> coord = generateCoordinates();
+    std::pair<int, int> attributes = generateEnemyAttributes();
+    generateDirection(eventData);
+
+    eventData.x = coord.first;
+    eventData.y = coord.second;
+    eventData.dmg = attributes.second;
+    eventData.hp = attributes.first;
 }
 
 void Game::spawn() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 gen(seed);
     std::uniform_int_distribution<int> dis(0, 99);
 
     int randomNum = dis(gen);
 
+    if (randomNum < 68) return;
+
     // probabilities
-    int dumbEnemyThreshold = 50;
-    int smartEnemyThreshold = 70;
-    int powerUpThreshold = 85;
-    int dumbEnemyHoardThreshold = 90;
+    int dumbEnemyThreshold = 75;
+    int smartEnemyThreshold = 80;
+    int healThreshold = 85;
+    int armorThreshold = 89;
+    int stopwatchThreshold = 93;
+    int jackpotThreshold = 96;
+    int dumbEnemyHoardThreshold = 98;
     int smartEnemyHoardThreshold = 100;
 
-    // Determine spawn type based on random number
     EventData eventData;
-    if (randomNum < 30) return;
 
-    // TODO generate random coordinates that are empty
+    time++;
     // TODO throw exception if there are no empty cells left
 
     if (randomNum < dumbEnemyThreshold) {
         eventData.name = "SF";
-
+        generate(eventData);
+        notifyObservers(eventData, "Enemy");
     } else if (randomNum < smartEnemyThreshold) {
-        // TODO
-    } else if (randomNum < powerUpThreshold) {
-        // TODO
+        eventData.name = "ST";
+        generate(eventData);
+        notifyObservers(eventData, "Enemy");
+    } else if (randomNum < healThreshold) {
+        eventData.name = "SD";
+        generate(eventData);
+        eventData.type = "H";
+        notifyObservers(eventData, "PowerUp");
+    } else if (randomNum < armorThreshold) {
+        eventData.name = "SD";
+        generate(eventData);
+        eventData.type = "A";
+        notifyObservers(eventData, "PowerUp");
+    } else if (randomNum < stopwatchThreshold) {
+        eventData.name = "SD";
+        generate(eventData);
+        eventData.type = "F";
+        notifyObservers(eventData, "PowerUp");
+    } else if (randomNum < jackpotThreshold){
+        eventData.name = "SD";
+        generate(eventData);
+        eventData.type = "M";
+        notifyObservers(eventData, "PowerUp");
     } else if (randomNum < dumbEnemyHoardThreshold) {
-        // TODO
+        eventData.name = "SWF";
+        generate(eventData);
+        notifyObservers(eventData, "Enemy");
     } else {
-        // TODO
+        eventData.name = "SWT";
+        generate(eventData);
+        notifyObservers(eventData, "Enemy");
     }
 }
 
@@ -76,6 +152,9 @@ void Game::start(sf::RenderWindow& window) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
+                std::cout << "Board on time: " << time << '\n';
+                board.displayBoard();
+                std::cout << '\n';
                 time++;
                 EventData eventData;
                 if (event.key.code == sf::Keyboard::W) {
@@ -95,10 +174,13 @@ void Game::start(sf::RenderWindow& window) {
                     eventData.dir = 'D';
                     notifyObservers(eventData, "Player");
                 } else if (event.key.code == sf::Keyboard::B) {
-                    // TODO player attack
+                    eventData.name = "ATT";
+                    notifyObservers(eventData, "Player");
                 } else if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
+
+                spawn();
             }
 
         }
@@ -186,33 +268,33 @@ void Game::render(sf::RenderWindow &window) {
             }
 
             // attacks
-            if (board.checkValue(i, j, 'O'))
+            else if (board.checkValue(j, i, 'O'))
                 cell.setTexture(&spellTexture);
-            if (board.checkValue(i, j, 'L'))
+            else if (board.checkValue(j, i, 'L'))
                 cell.setTexture(&attackTexture);
 
             // enemies
-            if (board.checkValue(i, j, 'x'))
+            else if (board.checkValue(j, i, 'x'))
                 cell.setTexture(&deadEnemyTexture);
-            if (board.checkValue(i, j, '+')) {
+            else if (board.checkValue(j, i, '+')) {
                 // TODO check if smart enemy or dumb enemy
                 cell.setTexture(&smartEnemyTexture);
             }
 
             // powerups
-            if (board.checkValue(i, j, '$')) {
+            else if (board.checkValue(j, i, '$')) {
                 cell.setTexture(&moneyTexture);
             }
-            if (board.checkValue(i, j, 'm') || board.checkValue(i, j, 'M')) {
+            else if (board.checkValue(j, i, 'm') || board.checkValue(j, i, 'M')) {
                 cell.setTexture(&jackpotTexture);
             }
-            if (board.checkValue(i, j, 'f') || board.checkValue(i, j, 'F')) {
+            else if (board.checkValue(j, i, 'f') || board.checkValue(j, i, 'F')) {
                 cell.setTexture(&stopwatchTexture);
             }
-            if (board.checkValue(i, j, 'a') || board.checkValue(i, j, 'A')) {
+            else if (board.checkValue(j, i, 'a') || board.checkValue(j, i, 'A')) {
                 cell.setTexture(&armorTexture);
             }
-            if (board.checkValue(i, j, 'h') || board.checkValue(i, j, 'H')) {
+            else if (board.checkValue(j, i, 'h') || board.checkValue(j, i, 'H')) {
                 cell.setTexture(&healTexture);
             }
 
@@ -221,13 +303,28 @@ void Game::render(sf::RenderWindow &window) {
     }
 
     sf::Text timeText("Time " + std::to_string(time), font, 35);
-//    sf::Text hpText("Hp: 10 ", font, 35);
+    sf::Text hpText("Hp: " + std::to_string(player.getHP()), font, 35);
+    sf::Text armorText("Armor: " + std::to_string(player.getArmor()), font, 35);
+    sf::Text rangeText("Ability range: " + std::to_string(player.getRange()), font, 35);
+    sf::Text levelText("Level: " + std::to_string(player.getLevel()), font, 35);
+    sf::Text stopwatchText("Stopwatch activated: " + std::to_string(static_cast<int>(player.checkTime())), font, 35);
+    sf::Text moneyText("Money: " + std::to_string(player.getMoney()), font, 35);
 
     timeText.setPosition(window.getSize().x - timeText.getLocalBounds().width - 20, 20);
-//    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 40, 20);
+    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 20);
+    armorText.setPosition(window.getSize().x - armorText.getLocalBounds().width - 20, hpText.getPosition().y + hpText.getLocalBounds().height + 20);
+    rangeText.setPosition(window.getSize().x - rangeText.getLocalBounds().width - 20, armorText.getPosition().y + armorText.getLocalBounds().height + 20);
+    levelText.setPosition(window.getSize().x - levelText.getLocalBounds().width - 20, rangeText.getPosition().y + rangeText.getLocalBounds().height + 20);
+    stopwatchText.setPosition(window.getSize().x - stopwatchText.getLocalBounds().width - 20, levelText.getPosition().y + levelText.getLocalBounds().height + 20);
+    moneyText.setPosition(window.getSize().x - moneyText.getLocalBounds().width - 20, stopwatchText.getPosition().y + stopwatchText.getLocalBounds().height + 20);
 
     window.draw(timeText);
-//    window.draw(hpText);
+    window.draw(hpText);
+    window.draw(armorText);
+    window.draw(rangeText);
+    window.draw(levelText);
+    window.draw(stopwatchText);
+    window.draw(moneyText);
 }
 
 bool Game::borders(int x, int y) {

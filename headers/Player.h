@@ -32,6 +32,14 @@ public:
         level++;
     }
 
+    [[nodiscard]] int getLevel() const {
+        return level;
+    }
+
+    [[nodiscard]] int getMoney() const {
+        return totalMoney;
+    }
+
     void upgradeNormalAttack() {
         ability *= 2;
         abilityRange++;
@@ -96,6 +104,14 @@ public:
 
     [[nodiscard]] int getAbility() const {
         return ability;
+    }
+
+    [[nodiscard]] int getHP() const {
+        return hp;
+    }
+
+    [[nodiscard]] int getArmor() const {
+        return armor;
     }
 
     [[nodiscard]] bool availableSpell() const {

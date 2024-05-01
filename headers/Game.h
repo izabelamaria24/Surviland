@@ -12,6 +12,7 @@
 #include <memory>
 #include <random>
 #include <string>
+#include <chrono>
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
@@ -43,6 +44,9 @@ private:
     void markPowerUps();
 
     std::pair<int, int> generateCoordinates();
+    std::pair<int, int> generateEnemyAttributes();
+    char generateDirection(EventData& eventData);
+    void generate(EventData& eventData);
 
 public:
     Game() {

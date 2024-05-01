@@ -5,7 +5,7 @@
 
 #include "Player.h"
 #include "Helper.h"
-
+#include <iostream>
 /*
     HEAL - 1
     ARMOR - 2
@@ -30,8 +30,20 @@ private:
     std::unordered_map<std::pair<int, int>, Category, PairHash> marks;
 
 public:
-    Board(int width, int height) : width(width), height(height), board(height + 2, std::vector<char>(width + 2)){};
+    Board(int width, int height) : width(width), height(height), board(height + 2, std::vector<char>(width + 2)){
+        for (int i = 0; i < height + 2; ++i) {
+            for (int j = 0; j < width + 2; ++j) {
+                board[i][j] = '.';
+            }
+        }
+    };
     Board() = default;
+
+    void displayBoard() const {
+        for (int i = 1; i <= height; i++, std::cout << '\n')
+            for (int j = 1; j <= width; j++)
+                std::cout << board[i][j];
+    }
 
     [[nodiscard]] int getHeight() const {
         return height;
@@ -79,7 +91,8 @@ public:
         else if (marks[{x, y}].stopwatch) update(x, y, 'f');
         else if (marks[{x, y}].money) update(x, y, '$');
         else if (marks[{x, y}].jackpot) update(x, y, 'm');
-//        else update(x, y, '.');
+        else update(x, y, '.');
+         // TODO LAST CONDITION MAY CAUSE BUGS
     }
 
     void collect(int x, int y, char attribute, Player& player) {
