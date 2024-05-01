@@ -129,7 +129,6 @@ void PlayerController::move(EventData& eventData) {
                 game.getBoard().update(x, y, '.');
                 if (x > 1) game.getPlayer().move(x - 1, y);
             }
-
             game.collectResources();
             x = game.getPlayer().getX(), y = game.getPlayer().getY();
             game.getBoard().update(x, y, '^');

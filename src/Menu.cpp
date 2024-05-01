@@ -3,7 +3,7 @@
 
 void Menu::handlePlay(sf::RenderWindow& window) {
     Board board(10, 10);
-    Player player(1, 0, 0, board.getHeight()  / 2, board.getWidth() / 2, 10);
+    Player player(board.getHeight()  / 2, board.getWidth() / 2, 10, 0);
 
     std::shared_ptr<Game> game = Game::getGameInstance();
 
@@ -44,6 +44,8 @@ void Menu::display() {
                     handlePlay(window);
                 } else if (event.key.code == sf::Keyboard::S) {
                     // TODO
+                } else if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
                 }
             }
         }

@@ -30,7 +30,7 @@ private:
     std::unordered_map<std::pair<int, int>, Category, PairHash> marks;
 
 public:
-    Board(int width, int height) : width(width), height(height){};
+    Board(int width, int height) : width(width), height(height), board(height + 2, std::vector<char>(width + 2)){};
     Board() = default;
 
     [[nodiscard]] int getHeight() const {

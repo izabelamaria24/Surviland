@@ -109,5 +109,9 @@ public:
     [[nodiscard]] int getRange() const {
         return abilityRange;
     }
+
+    void increaseAvailableUpgrades() {
+        availableAbilityUpgrades++;
+    }
 };
 

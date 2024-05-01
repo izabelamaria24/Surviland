@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <memory>
+#include <random>
+#include <string>
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
@@ -40,6 +42,8 @@ private:
     void markEnemies();
     void markPowerUps();
 
+    std::pair<int, int> generateCoordinates();
+
 public:
     Game() {
         // TODO try catch
@@ -48,30 +52,11 @@ public:
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
 
-    /// observers methods
-    void addObservers() {
-        observers.emplace_back(std::make_shared<PlayerController>(*this));
-        observers.emplace_back(std::make_shared<EnemyController>(*this));
-        observers.emplace_back(std::make_shared<PowerUpController>(*this));
-    };
+    void spawn();
 
-    void notifyObservers(EventData& eventData, const std::string& observerType) {
-        for (const auto& observer : observers) {
-            if (observerType == "Player") {
-                if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
-                    playerObserver->update(eventData);
-                }
-            } else if (observerType == "Enemy") {
-                if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
-                    enemyObserver->update(eventData);
-                }
-            } else if (observerType == "PowerUp") {
-                if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
-                    powerUpObserver->update(eventData);
-                }
-            }
-        }
-    }
+    /// observers methods
+    void addObservers();
+    void notifyObservers(EventData& eventData, const std::string& observerType);
 
     Board& getBoard() {
         return board;
@@ -81,7 +66,7 @@ public:
         return player;
     }
 
-    void build(const Board& initialBoard, const Player& initialPlayer) {
+    void build(Board& initialBoard, Player& initialPlayer) {
         board = initialBoard;
         player = initialPlayer;
     }

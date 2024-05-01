@@ -1,5 +1,68 @@
 #include "../headers/Game.h"
 
+void Game::addObservers() {
+    observers.emplace_back(std::make_shared<PlayerController>(*this));
+    observers.emplace_back(std::make_shared<EnemyController>(*this));
+    observers.emplace_back(std::make_shared<PowerUpController>(*this));
+}
+
+void Game::notifyObservers(EventData &eventData, const std::string &observerType) {
+    for (const auto& observer : observers) {
+        if (observerType == "Player") {
+            if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
+                playerObserver->update(eventData);
+            }
+        } else if (observerType == "Enemy") {
+            if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
+                enemyObserver->update(eventData);
+            }
+        } else if (observerType == "PowerUp") {
+            if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
+                powerUpObserver->update(eventData);
+            }
+        }
+    }
+}
+
+std::pair<int, int> Game::generateCoordinates() {
+    // TODO
+}
+
+void Game::spawn() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dis(0, 99);
+
+    int randomNum = dis(gen);
+
+    // probabilities
+    int dumbEnemyThreshold = 50;
+    int smartEnemyThreshold = 70;
+    int powerUpThreshold = 85;
+    int dumbEnemyHoardThreshold = 90;
+    int smartEnemyHoardThreshold = 100;
+
+    // Determine spawn type based on random number
+    EventData eventData;
+    if (randomNum < 30) return;
+
+    // TODO generate random coordinates that are empty
+    // TODO throw exception if there are no empty cells left
+
+    if (randomNum < dumbEnemyThreshold) {
+        eventData.name = "SF";
+
+    } else if (randomNum < smartEnemyThreshold) {
+        // TODO
+    } else if (randomNum < powerUpThreshold) {
+        // TODO
+    } else if (randomNum < dumbEnemyHoardThreshold) {
+        // TODO
+    } else {
+        // TODO
+    }
+}
+
 void Game::clearScreen(sf::RenderWindow& window) {
     window.clear();
 }
@@ -12,7 +75,32 @@ void Game::start(sf::RenderWindow& window) {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
-            // TODO handle game events
+            if (event.type == sf::Event::KeyPressed) {
+                time++;
+                EventData eventData;
+                if (event.key.code == sf::Keyboard::W) {
+                    eventData.name = "M";
+                    eventData.dir = 'U';
+                    notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::A) {
+                    eventData.name = "M";
+                    eventData.dir = 'L';
+                    notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::D) {
+                    eventData.name = "M";
+                    eventData.dir = 'R';
+                    notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::S) {
+                    eventData.name = "M";
+                    eventData.dir = 'D';
+                    notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::B) {
+                    // TODO player attack
+                } else if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
+            }
+
         }
 
         window.clear();
@@ -39,7 +127,7 @@ void Game::render(sf::RenderWindow &window) {
     }
 
     sf::Texture smartEnemyTexture;
-    if (!smartEnemyTexture.loadFromFile("")) {
+    if (!smartEnemyTexture.loadFromFile("../assets/smartenemy.png")) {
         // TODO throw exception
     }
 
@@ -48,20 +136,98 @@ void Game::render(sf::RenderWindow &window) {
         // TODO throw exception
     }
 
-  const int cellSize = 100;
-    for (int i = 0; i < board.getHeight(); ++i) {
-        for (int j = 0; j < board.getWidth(); ++j) {
+    sf::Texture attackTexture;
+    if (!attackTexture.loadFromFile("../assets/attack.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture deadEnemyTexture;
+    if (!deadEnemyTexture.loadFromFile("../assets/dead.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture moneyTexture;
+    if (!moneyTexture.loadFromFile("../assets/money.jpg")) {
+        // TODO throw exception
+    }
+
+    sf::Texture jackpotTexture;
+    if (!jackpotTexture.loadFromFile("../assets/jackpot.jpg")) {
+        // TODO throw exception
+    }
+
+    sf::Texture stopwatchTexture;
+    if (!stopwatchTexture.loadFromFile("../assets/stopwatch.jpg")) {
+        // TODO throw exception
+    }
+
+    sf::Texture armorTexture;
+    if (!armorTexture.loadFromFile("../assets/armor.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture healTexture;
+    if (!healTexture.loadFromFile("../assets/hp.png")) {
+        // TODO throw exception
+    }
+
+  const int cellSize = 80;
+    for (int i = 1; i <= board.getHeight(); ++i) {
+        for (int j = 1; j <= board.getWidth(); ++j) {
             sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
             cell.setPosition(i * cellSize, j * cellSize);
             cell.setOutlineThickness(1);
             cell.setOutlineColor(sf::Color::Red);
             cell.setFillColor(sf::Color::White);
 
-            if (player.getX() == i && player.getX() == j)
+            // player
+            if (player.getX() == j && player.getY() == i) {
                 cell.setTexture(&playerTexture);
+            }
+
+            // attacks
+            if (board.checkValue(i, j, 'O'))
+                cell.setTexture(&spellTexture);
+            if (board.checkValue(i, j, 'L'))
+                cell.setTexture(&attackTexture);
+
+            // enemies
+            if (board.checkValue(i, j, 'x'))
+                cell.setTexture(&deadEnemyTexture);
+            if (board.checkValue(i, j, '+')) {
+                // TODO check if smart enemy or dumb enemy
+                cell.setTexture(&smartEnemyTexture);
+            }
+
+            // powerups
+            if (board.checkValue(i, j, '$')) {
+                cell.setTexture(&moneyTexture);
+            }
+            if (board.checkValue(i, j, 'm') || board.checkValue(i, j, 'M')) {
+                cell.setTexture(&jackpotTexture);
+            }
+            if (board.checkValue(i, j, 'f') || board.checkValue(i, j, 'F')) {
+                cell.setTexture(&stopwatchTexture);
+            }
+            if (board.checkValue(i, j, 'a') || board.checkValue(i, j, 'A')) {
+                cell.setTexture(&armorTexture);
+            }
+            if (board.checkValue(i, j, 'h') || board.checkValue(i, j, 'H')) {
+                cell.setTexture(&healTexture);
+            }
+
             window.draw(cell);
         }
     }
+
+    sf::Text timeText("Time " + std::to_string(time), font, 35);
+//    sf::Text hpText("Hp: 10 ", font, 35);
+
+    timeText.setPosition(window.getSize().x - timeText.getLocalBounds().width - 20, 20);
+//    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 40, 20);
+
+    window.draw(timeText);
+//    window.draw(hpText);
 }
 
 bool Game::borders(int x, int y) {
@@ -71,7 +237,7 @@ bool Game::borders(int x, int y) {
 void Game::update() {
     while (player.updateAvailable()) {
         player.levelUp();
-//        availableAbilityUpgrades++;
+        player.increaseAvailableUpgrades();
         player.payUpgrade();
     }
 }
