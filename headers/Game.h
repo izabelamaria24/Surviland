@@ -6,7 +6,7 @@
 #include "Enemy.h"
 #include "PowerUp.h"
 #include "EventData.h"
-//#include "Controller.h"
+#include "Controller.h"
 
 #include <iostream>
 #include <memory>
@@ -15,7 +15,7 @@ class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
 
 private:
-//    std::vector<std::shared_ptr<Observer>> observers;
+    std::vector<std::shared_ptr<Observer>> observers;
 
     bool gameOver = false;
     int time = 0;
@@ -41,9 +41,37 @@ private:
     void markPowerUps();
 
 public:
-    Game() = default;
+    Game() {
+        // TODO try catch
+        addObservers();
+    }
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
+
+    /// observers methods
+    void addObservers() {
+        observers.emplace_back(std::make_shared<PlayerController>(*this));
+        observers.emplace_back(std::make_shared<EnemyController>(*this));
+        observers.emplace_back(std::make_shared<PowerUpController>(*this));
+    };
+
+    void notifyObservers(EventData& eventData, const std::string& observerType) {
+        for (const auto& observer : observers) {
+            if (observerType == "Player") {
+                if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
+                    playerObserver->update(eventData);
+                }
+            } else if (observerType == "Enemy") {
+                if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
+                    enemyObserver->update(eventData);
+                }
+            } else if (observerType == "PowerUp") {
+                if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
+                    powerUpObserver->update(eventData);
+                }
+            }
+        }
+    }
 
     Board& getBoard() {
         return board;
