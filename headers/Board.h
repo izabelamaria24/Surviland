@@ -99,14 +99,14 @@ public:
 
     void collect(int x, int y, char attribute, Player& player) {
         if (attribute == 'h') {
-            player.collectHp(5);
+            player.collectHp(2);
             marks[{x, y}].heal = 0;
         }
         if (attribute == 'a') {
             player.collectArmor(1);
             marks[{x, y}].armor = 0;
         }
-        if (attribute == 's') marks[{x, y}].stopwatch = 0;
+        if (attribute == 'f') marks[{x, y}].stopwatch = 0;
         if (attribute == 'm') marks[{x, y}].jackpot = 0;
         if (attribute == '$') {
             player.collectMoney(marks[{x, y}].money);
@@ -117,11 +117,10 @@ public:
     void increase(int x, int y, char attribute, int amount) {
         if (attribute == 'h') marks[{x, y}].heal += amount;
         if (attribute == 'a') marks[{x, y}].armor += amount;
-        if (attribute == 's') marks[{x, y}].stopwatch += amount;
+        if (attribute == 'f') marks[{x, y}].stopwatch += amount;
         if (attribute == 'm') marks[{x, y}].jackpot += amount;
         if (attribute == '$') marks[{x, y}].money += amount;
     }
-
 
     void markPowerUps() {
         for (int i = 1; i <= height; i++)

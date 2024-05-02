@@ -151,9 +151,7 @@ void Game::start(sf::RenderWindow& window) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                std::cout << "Board on time: " << time << '\n';
-                board.displayBoard();
-                std::cout << '\n';
+                player.decreaseTime();
                 EventData eventData;
                 time++;
                 if (event.key.code == sf::Keyboard::W) {
@@ -187,11 +185,9 @@ void Game::start(sf::RenderWindow& window) {
                     window.close();
                 }
 
-                window.clear();
-                render(window);
-                window.display();
-
-                spawn();
+                std::cout << player.checkTime() << '\n';
+                if (!player.checkTime())
+                    spawn();
 
                 window.clear();
                 render(window);
@@ -263,12 +259,27 @@ void Game::render(sf::RenderWindow &window) {
         // TODO throw exception
     }
 
+    sf::Texture heartTexture;
+    if (!heartTexture.loadFromFile("../assets/heart.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture emptyHeartTexture;
+    if (!emptyHeartTexture.loadFromFile("../assets/empty_heart.png")) {
+        // TODO throw exception
+    }
+
+    sf::Texture coinTexture;
+    if (!coinTexture.loadFromFile("../assets/coin.png")) {
+        // TODO throw exception
+    }
+
   const int cellSize = 80;
     for (int i = 1; i <= board.getHeight(); ++i) {
         for (int j = 1; j <= board.getWidth(); ++j) {
             sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
             cell.setPosition(i * cellSize, j * cellSize);
-            cell.setOutlineThickness(1);
+            cell.setOutlineThickness(2);
             cell.setOutlineColor(sf::Color::Red);
             cell.setFillColor(sf::Color::White);
 
@@ -308,33 +319,77 @@ void Game::render(sf::RenderWindow &window) {
                 cell.setTexture(&healTexture);
             }
 
+            if (board.checkValue(j, i, 'm') || board.checkValue(j, i, 'f') || board.checkValue(j, i, 'a')
+            || board.checkValue(j, i, 'h') || board.checkValue(j, i, '$')) cell.setOutlineColor(sf::Color::Green);
+
             window.draw(cell);
         }
     }
 
     sf::Text timeText("Time " + std::to_string(time), font, 35);
-    sf::Text hpText("Hp: " + std::to_string(player.getHP()), font, 35);
+
+    sf::Text hpText("Hp: ", font, 35);
+    std::vector<sf::RectangleShape> hpRectangles;
+    std::vector<sf::RectangleShape> coinSprites;
+
+    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 30);
+
+    float startX = window.getSize().x - 30 * (10 + 1) - 5 * 10;
+    float startY = hpText.getPosition().y + hpText.getLocalBounds().height + 20;
+
+    for (int i = 0; i < 10; ++i) {
+        sf::RectangleShape rect(sf::Vector2f(30, 30));
+        if (i < player.getHP())
+            rect.setTexture(&heartTexture);
+        else
+            rect.setTexture(&emptyHeartTexture);
+
+        float posX = startX + i * (30 + 5);
+        rect.setPosition(posX, startY);
+        hpRectangles.push_back(rect);
+    }
+
     sf::Text armorText("Armor: " + std::to_string(player.getArmor()), font, 35);
     sf::Text rangeText("Ability range: " + std::to_string(player.getRange()), font, 35);
     sf::Text levelText("Level: " + std::to_string(player.getLevel()), font, 35);
     sf::Text stopwatchText("Stopwatch activated: " + std::to_string(static_cast<int>(player.checkTime())), font, 35);
-    sf::Text moneyText("Money: " + std::to_string(player.getMoney()), font, 35);
+    sf::Text moneyText("Money: ", font, 35);
 
     timeText.setPosition(window.getSize().x - timeText.getLocalBounds().width - 20, 20);
     hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 20);
-    armorText.setPosition(window.getSize().x - armorText.getLocalBounds().width - 20, hpText.getPosition().y + hpText.getLocalBounds().height + 20);
+    armorText.setPosition(window.getSize().x - armorText.getLocalBounds().width - 20, hpText.getPosition().y + hpText.getLocalBounds().height + 40);
     rangeText.setPosition(window.getSize().x - rangeText.getLocalBounds().width - 20, armorText.getPosition().y + armorText.getLocalBounds().height + 20);
     levelText.setPosition(window.getSize().x - levelText.getLocalBounds().width - 20, rangeText.getPosition().y + rangeText.getLocalBounds().height + 20);
     stopwatchText.setPosition(window.getSize().x - stopwatchText.getLocalBounds().width - 20, levelText.getPosition().y + levelText.getLocalBounds().height + 20);
     moneyText.setPosition(window.getSize().x - moneyText.getLocalBounds().width - 20, stopwatchText.getPosition().y + stopwatchText.getLocalBounds().height + 20);
 
+    startX = window.getSize().x - 30 * (player.getMoney() + 1) - 5 * player.getMoney();
+    startY = moneyText.getPosition().y + moneyText.getLocalBounds().height + 20;
+
+    for (int i = 0; i < player.getMoney(); ++i) {
+        sf::RectangleShape coinSprite(sf::Vector2f(30, 30));
+        coinSprite.setTexture(&coinTexture);
+        coinSprite.setPosition(startX + i * (30 + 5), startY);
+        coinSprites.push_back(coinSprite);
+    }
+
+
     window.draw(timeText);
     window.draw(hpText);
+
+    for (const auto& rect : hpRectangles) {
+        window.draw(rect);
+    }
+
     window.draw(armorText);
     window.draw(rangeText);
     window.draw(levelText);
     window.draw(stopwatchText);
     window.draw(moneyText);
+
+    for (const auto& item : coinSprites) {
+        window.draw(item);
+    }
 }
 
 bool Game::borders(int x, int y) {

@@ -122,6 +122,11 @@ public:
         timeLeft = 4;
     }
 
+    void decreaseTime() {
+        if (timeLeft > 0)
+            timeLeft--;
+    }
+
     [[nodiscard]] int getRange() const {
         return abilityRange;
     }
