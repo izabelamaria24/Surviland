@@ -176,22 +176,22 @@ void PlayerController::update(EventData& eventData) {
 }
 
 void EnemyController::spawnDumbEnemy(EventData &eventData) {
-    game.moveEnemies();
-    game.addEnemy(eventData.x + 1, eventData.y + 1, eventData.dmg, eventData.hp, eventData.dir, 1);
+//    game.moveEnemies();
+    game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, eventData.dir, 1);
     game.markEntities();
 }
 
 void EnemyController::spawnSmartEnemy(EventData &eventData) {
-    game.moveEnemies();
-    game.addEnemy(eventData.x + 1, eventData.y + 1, eventData.dmg, eventData.hp, game.getBoard().getPlayer(game.getPlayer()), 2);
+//    game.moveEnemies();
+    game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, game.getBoard().getPlayer(game.getPlayer()), 2);
     game.markEntities();
 }
 
 void EnemyController::spawnDumbEnemyHoard(EventData& eventData) {
-    game.moveEnemies();
+//    game.moveEnemies();
     int xSwf = eventData.x, ySwf = eventData.y;
     for (int i = 1; i <= 3; i++) {
-        game.addEnemy(xSwf + 1, ySwf + 1, eventData.dmg, eventData.hp, eventData.dir, 1);
+        game.addEnemy(xSwf, ySwf, eventData.dmg, eventData.hp, eventData.dir, 1);
         ySwf++;
     }
     game.clearAttack();
@@ -199,7 +199,7 @@ void EnemyController::spawnDumbEnemyHoard(EventData& eventData) {
 }
 
 void EnemyController::spawnSmartEnemyHoard(EventData &eventData) {
-    game.moveEnemies();
+//    game.moveEnemies();
 
     int height = game.getBoard().getHeight();
     int width = game.getBoard().getWidth();
@@ -233,8 +233,8 @@ void EnemyController::update(EventData &eventData) {
 }
 
 void PowerUpController::spawnPowerup(EventData &eventData) {
-    game.moveEnemies();
-    game.addPowerup(eventData.x + 1, eventData.y + 1, eventData.hp, eventData.type);
+//    game.moveEnemies();
+    game.addPowerup(eventData.x, eventData.y, eventData.hp, eventData.type);
     game.clearAttack();
     game.markEntities();
 }

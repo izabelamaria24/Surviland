@@ -61,6 +61,10 @@ public:
         return board[player.getX()][player.getY()];
     }
 
+    bool noMarks(int x, int y) {
+        return !marks[{x, y}].money && !marks[{x, y}].heal && !marks[{x, y}].armor && !marks[{x, y}].stopwatch && !marks[{x, y}].jackpot;
+    }
+
     bool checkMoney(int x, int y) {
         return marks[{x, y}].money > 0;
     }
@@ -91,8 +95,6 @@ public:
         else if (marks[{x, y}].stopwatch) update(x, y, 'f');
         else if (marks[{x, y}].money) update(x, y, '$');
         else if (marks[{x, y}].jackpot) update(x, y, 'm');
-        else update(x, y, '.');
-         // TODO LAST CONDITION MAY CAUSE BUGS
     }
 
     void collect(int x, int y, char attribute, Player& player) {
@@ -101,7 +103,7 @@ public:
             marks[{x, y}].heal = 0;
         }
         if (attribute == 'a') {
-            player.collectArmor(5);
+            player.collectArmor(1);
             marks[{x, y}].armor = 0;
         }
         if (attribute == 's') marks[{x, y}].stopwatch = 0;

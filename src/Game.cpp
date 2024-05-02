@@ -33,20 +33,18 @@ std::pair<int, int> Game::generateCoordinates() {
 
     std::uniform_int_distribution<int> disX(1, width);
     std::uniform_int_distribution<int> disY(1, height);
-    int x, y;
 
-    do {
-        x = disX(gen);
-        y = disY(gen);
-    } while (board.checkValue(x, y, '^') || board.checkValue(x, y, '<') || board.checkValue(x, y, 'v') || board.checkValue(x, y, '>'));
+    int x = disX(gen);
+    int y = disY(gen);
 
+    std::cout << "Enemy spawned at: " << x << " " << y << '\n';
     return std::make_pair(x, y);
 }
 
 std::pair<int, int> Game::generateEnemyAttributes() {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dis(1, 10);
+    std::uniform_int_distribution<int> dis(1, 1);
 
     int hp = dis(gen), dmg = dis(gen);
     return std::make_pair(hp, dmg);
@@ -55,10 +53,9 @@ std::pair<int, int> Game::generateEnemyAttributes() {
 char Game::generateDirection(EventData& eventData) {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
-    std::uniform_int_distribution<int> dis(0, 4);
+    std::uniform_int_distribution<int> dis(0, 3);
 
     int val = dis(gen);
-    std::cout << val << '\n';
     if (val == 0) eventData.dir = 'U';
     if (val == 1) eventData.dir = 'D';
     if (val == 2) eventData.dir = 'R';
@@ -83,7 +80,7 @@ void Game::spawn() {
 
     int randomNum = dis(gen);
 
-    if (randomNum < 68) return;
+    if (randomNum < 70) return;
 
     // probabilities
     int dumbEnemyThreshold = 75;
@@ -147,6 +144,8 @@ void Game::start(sf::RenderWindow& window) {
     window.setActive(true);
 
     while (window.isOpen()) {
+        update();
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -155,8 +154,8 @@ void Game::start(sf::RenderWindow& window) {
                 std::cout << "Board on time: " << time << '\n';
                 board.displayBoard();
                 std::cout << '\n';
-                time++;
                 EventData eventData;
+                time++;
                 if (event.key.code == sf::Keyboard::W) {
                     eventData.name = "M";
                     eventData.dir = 'U';
@@ -176,18 +175,29 @@ void Game::start(sf::RenderWindow& window) {
                 } else if (event.key.code == sf::Keyboard::B) {
                     eventData.name = "ATT";
                     notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::L) {
+                    eventData.name = "UP";
+                    eventData.type = "L";
+                    notifyObservers(eventData, "Player");
+                } else if (event.key.code == sf::Keyboard::O) {
+                    eventData.name = "UP";
+                    eventData.type = "O";
+                    notifyObservers(eventData, "Player");
                 } else if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
 
+                window.clear();
+                render(window);
+                window.display();
+
                 spawn();
+
+                window.clear();
+                render(window);
+                window.display();
             }
-
         }
-
-        window.clear();
-        render(window);
-        window.display();
     }
 }
 
@@ -368,6 +378,7 @@ void Game::moveEnemies() {
 
         if (!(x == player.getX() && y == player.getY())) {
             board.checkAndUpdate(enemy->getX(), enemy->getY());
+            if (board.noMarks(enemy->getX(), enemy->getY())) board.update(enemy->getX(), enemy->getY(), '.');
             // TODO CHECK IF board[x][y] has powerup
             enemy->changeDirection(board, player);
         } else {
@@ -433,7 +444,7 @@ void Game::clearAttack() {
     if (player.availableSpell()) clearSpell();
 
     for (int i = 1; i <= board.getHeight(); i++)
-        for (int j = 1; j <= board.getHeight(); j++)
+        for (int j = 1; j <= board.getWidth(); j++)
             board.checkAndUpdate(i, j);
 }
 
@@ -617,6 +628,8 @@ void Game::attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAl
 
 void Game::takePowerups(int x, int y, char sym) {
     for (auto &powerup: powerUps) {
+        std::cout << x << " " << y << '\n';
+        std::cout << powerup->getX() << " " << powerup->getY() << '\n';
         if (powerup->getX() == x && powerup->getY() == y) {
             if (!powerup->checkLastHit()) {
                 powerup->attack(sym, player.getAbility(), player.getSpell1(), player.availableSpell());

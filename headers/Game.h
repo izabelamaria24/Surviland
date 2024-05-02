@@ -73,6 +73,7 @@ public:
     void build(Board& initialBoard, Player& initialPlayer) {
         board = initialBoard;
         player = initialPlayer;
+        board.update(player.getX(), player.getY(), '^');
     }
 
     void start(sf::RenderWindow& window); // TODO
