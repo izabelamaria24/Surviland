@@ -93,7 +93,7 @@ private:
     int prevX{};
     int prevY{};
 
-    void track(Player& player) {
+    void track(const Player& player) {
         prevX = x;
         prevY = y;
 

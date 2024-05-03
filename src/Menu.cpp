@@ -23,19 +23,19 @@ void Menu::display() {
   // game title
     sf::Text title("Surviland", font, 100);
     title.setOrigin(title.getLocalBounds().width / 2, title.getLocalBounds().height / 2);
-    title.setPosition(window.getSize().x / 2, window.getSize().y / 4);
+    title.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 4);
 
     sf::Text playOption("Play (P)", font, 35);
     playOption.setOrigin(playOption.getLocalBounds().width / 2, playOption.getLocalBounds().height / 2);
-    playOption.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+    playOption.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 2);
 
     sf::Text statsOption("Stats (S)", font, 35);
     statsOption.setOrigin(statsOption.getLocalBounds().width / 2, statsOption.getLocalBounds().height / 2);
-    statsOption.setPosition(window.getSize().x / 2, window.getSize().y / 2 + 60);
+    statsOption.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 2 + 60);
 
     while (window.isOpen()) {
         // Handle events
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();

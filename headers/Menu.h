@@ -8,14 +8,14 @@ class Menu : public GameTemplate<Menu> {
   private:
     Menu() = default;
 
-    void handlePlay(sf::RenderWindow& window);
-    void display();
+    static void handlePlay(sf::RenderWindow& window);
+    static void display();
     
   public:
     Menu& operator=(const Menu&) = delete;
     Menu(const Menu&) = delete;
 
-    void init();
+    static void init();
 
     ~Menu() override = default;
 };
