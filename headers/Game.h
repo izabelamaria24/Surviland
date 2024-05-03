@@ -67,19 +67,11 @@ public:
     void addObservers();
     void notifyObservers(EventData& eventData, const std::string& observerType);
 
-    Board& getBoard() {
-        return board;
-    }
+    Board& getBoard();
 
-    Player& getPlayer() {
-        return player;
-    }
+    Player& getPlayer();
 
-    void build(const Board& initialBoard, const Player& initialPlayer) {
-        board = initialBoard;
-        player = initialPlayer;
-        board.update(player.getX(), player.getY(), '^');
-    }
+    void build(const Board& initialBoard, const Player& initialPlayer);
 
     void start(sf::RenderWindow& window);
 
@@ -91,9 +83,7 @@ public:
 
     void win();
 
-    void updateOutputMessage(const std::string& m) {
-        outputMessage = m;
-    }
+    void updateOutputMessage(const std::string& m);
 
     void addEnemy(int x, int y, int dmg, int hp, char dir, int type);
 

@@ -264,7 +264,6 @@ std::shared_ptr<Enemy> Game::checkEnemy(int x, int y) {
         if (enemy->getX() == x && enemy->getY() == y) return enemy;
 
     throw GameError("No enemy found");
-    return nullptr;
 }
 
 void Game::render(sf::RenderWindow& window) {
@@ -369,10 +368,10 @@ void Game::render(sf::RenderWindow& window) {
                 cell.setTexture(&deadEnemyTexture);
             else if (board.checkValue(j, i, '+')) {
                 std::shared_ptr<Enemy> temp = checkEnemy(j, i);
-                if (auto smartEnemy = std::dynamic_pointer_cast<SmartEnemy>(temp)) {
+                if (std::dynamic_pointer_cast<SmartEnemy>(temp)) {
                     cell.setTexture(&smartEnemyTexture);
                 }
-                else if (auto dumbEnemy = std::dynamic_pointer_cast<DumbEnemy>(temp)) {
+                else if (std::dynamic_pointer_cast<DumbEnemy>(temp)) {
                     cell.setTexture(&dumbEnemyTexture);
                 } else {
                     throw CastError("Failed to cast Enemy into SmartEnemy or DumbEnemy");
@@ -772,3 +771,22 @@ void Game::takePowerups(int x, int y, char sym) {
         }
     }
 }
+
+Board& Game::getBoard() {
+    return board;
+}
+
+Player& Game::getPlayer() {
+    return player;
+}
+
+void Game::build(const Board &initialBoard, const Player &initialPlayer) {
+    board = initialBoard;
+    player = initialPlayer;
+    board.update(player.getX(), player.getY(), '^');
+}
+
+void Game::updateOutputMessage(const std::string &m) {
+    outputMessage = m;
+}
+

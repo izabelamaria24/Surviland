@@ -140,6 +140,16 @@ add_executable(${PROJECT_NAME}
         src/Controller.cpp
         headers/EventData.h
         headers/Exceptions.h
+        src/Board.cpp
+        src/Player.cpp
+        src/Enemy.cpp
+        headers/DumbEnemy.h
+        headers/SmartEnemy.h
+        headers/PlayerController.h
+        headers/EnemyController.h
+        headers/PoweupController.h
+        src/DumbEnemy.cpp
+        src/SmartEnemy.cpp
 )
 
 ###############################################################################

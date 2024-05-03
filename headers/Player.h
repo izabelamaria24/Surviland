@@ -23,121 +23,50 @@ public:
     Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1),
                     ability(1), abilityRange(1), unlockedSpell(false), availableAbilityUpgrades(0), upgrade(0), spellUpgrade(0) {};
 
-    void move(int x1, int y1) {
-        x = x1;
-        y = y1;
-    }
+    void move(int x1, int y1);
 
-    void levelUp() {
-        level++;
-        if (spellUpgrade) spellUpgrade++; // TODO: USE SPELL UPGRADE (THIS IS FOR WARNING SOLVING)
-    }
+    void levelUp();
 
-    [[nodiscard]] int getLevel() const {
-        return level;
-    }
+    [[nodiscard]] int getLevel() const;
+    [[nodiscard]] int getMoney() const;
 
-    [[nodiscard]] int getMoney() const {
-        return totalMoney;
-    }
+    void upgradeNormalAttack();
+    void upgradeSpellAttack();
 
-    void upgradeNormalAttack() {
-        ability *= 2;
-        abilityRange++;
-        upgrade++;
-        availableAbilityUpgrades--;
-    }
+    void unlockSpell();
 
-    void upgradeSpellAttack() {
-        spellFeature1 *= 2;
-        spellFeature2++;
-        spellUpgrade++;
-    }
+    [[nodiscard]] bool verifyAvailableUpgrades() const;
 
-    void unlockSpell() {
-        unlockedSpell = true;
-    }
+    void substractUpgrade();
 
-    [[nodiscard]] bool verifyAvailableUpgrades() const {
-        return availableAbilityUpgrades >= 1;
-    }
+    void collectMoney(int amount);
+    void collectHp(int amount);
+    void collectArmor(int amount);
 
-    void substractUpgrade() {
-        availableAbilityUpgrades--;
-    }
+    [[nodiscard]] bool updateAvailable() const;
 
-    void collectMoney(int amount) {
-        totalMoney += amount;
-    }
+    void payUpgrade();
 
-    void collectHp(int amount) {
-        hp += amount;
-        hp = std::min(10, hp);
-    }
+    bool isDead();
 
-    void collectArmor(int amount) {
-        armor += amount;
-    }
+    [[nodiscard]] bool checkTime() const;
 
-    [[nodiscard]] bool updateAvailable() const {
-        return totalMoney >= 10;
-    }
+    void decreaseHp(int attack);
 
-    void payUpgrade() {
-        totalMoney -= 10;
-    }
+    [[nodiscard]] int getSpell1() const;
+    [[nodiscard]] int getSpell2() const;
+    [[nodiscard]] int getAbility() const;
+    [[nodiscard]] int getHP() const;
+    [[nodiscard]] int getArmor() const;
 
-    bool isDead() {
-        return hp <= 0;
-    }
+    [[nodiscard]] bool availableSpell() const;
 
-    [[nodiscard]] bool checkTime() const {
-        return timeLeft > 0;
-    }
+    void resetStopwatch();
 
-    void decreaseHp(int attack) {
-        hp -= std::max(0, attack - armor);
-    }
+    void decreaseTime();
 
-    [[nodiscard]] int getSpell1() const {
-        return spellFeature1;
-    }
+    [[nodiscard]] int getRange() const;
 
-    [[nodiscard]] int getSpell2() const {
-        return spellFeature2;
-    }
-
-    [[nodiscard]] int getAbility() const {
-        return ability;
-    }
-
-    [[nodiscard]] int getHP() const {
-        return hp;
-    }
-
-    [[nodiscard]] int getArmor() const {
-        return armor;
-    }
-
-    [[nodiscard]] bool availableSpell() const {
-        return unlockedSpell;
-    }
-
-    void resetStopwatch() {
-        timeLeft = 4;
-    }
-
-    void decreaseTime() {
-        if (timeLeft > 0)
-            timeLeft--;
-    }
-
-    [[nodiscard]] int getRange() const {
-        return abilityRange;
-    }
-
-    void increaseAvailableUpgrades() {
-        availableAbilityUpgrades++;
-    }
+    void increaseAvailableUpgrades();
 };
 
