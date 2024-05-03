@@ -1,10 +1,8 @@
 #pragma once
 
-#include "./GameTemplate.h"
+#include "GameTemplate.h"
 #include "Board.h"
 #include "Player.h"
-#include "DumbEnemy.h"
-#include "SmartEnemy.h"
 #include "PowerUp.h"
 #include "EventData.h"
 #include "Controller.h"
@@ -16,6 +14,10 @@
 #include <string>
 #include <chrono>
 #include <algorithm>
+
+class Enemy;
+class DumbEnemy;
+class SmartEnemy;
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
