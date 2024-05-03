@@ -1,6 +1,4 @@
 #include "../headers/Game.h"
-#include "../headers/SmartEnemy.h"
-#include "../headers/DumbEnemy.h"
 
 void Game::addObservers() {
     observers.emplace_back(std::make_shared<PlayerController>(*this));
