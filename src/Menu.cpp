@@ -17,7 +17,7 @@ void Menu::display() {
 
   sf::Font font;
   if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
-    // TODO throw exception
+     throw FontError("Could not load font!");
   }
 
   // game title
@@ -44,7 +44,7 @@ void Menu::display() {
                     handlePlay(window);
                     return;
                 } else if (event.key.code == sf::Keyboard::S) {
-                    // TODO
+                    // TODO STATS
                 } else if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }

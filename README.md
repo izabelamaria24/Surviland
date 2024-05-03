@@ -1,11 +1,41 @@
 # Surviland
 
-## Surviland is a 2D game. 
+## Surviland is a 2D game
+
+##### You are in a world full of possibilities: Surviland!
+##### In this world, you are a lost penguin and you need to survive as long as you can. 
+
+## Controls:
+
+### Movement:
+- **W, A, S, D:** Use these keys to move your penguin character around the world.
+
+### Combat:
+- **B:** Click to attack enemies with your equipped weapon or tool.
+
+### Upgrades:
+- **L:** Upgrade normal attack.
+- **O:** Upgrade spell attack.
+
+### Exit Game:
+- **Esc:** Save progress, or quit the game.
+
+
+Mastering these controls is essential for navigating the challenging terrain and surviving encounters with the diverse wildlife of Surviland. Stay vigilant, adapt to your surroundings, and use your wits to overcome the obstacles that stand between you and survival!
+
+## Entities:
+- **YOU:** The only penguin left in this wild world!
+- **DUMB ENEMIES:** Some kind of creatures riding a pig, they only follow a predefined trajectory
+- **SMART ENEMIES:** Some wierd, but smart creatures, they are able to detect penguins, so they will follow you
+- **HEAL POTION:** A mystic potion, you will gain +2HP if you consume it
+- **STOPWATCH:** A special powerup, it will stop enemies for 4 seconds
+- **ARMOR:** If you collect this powerup, it will protect you from enemies with damage < your total armor
+
 
 ### Cerințe modele de limbaj la nivel de semestru
-- [ ] minim o funcționalitate majoritar doar cu LLM
-- [ ] minim 2-3 funcționalități ~50% voi, ~50% LLM-ul
-- [ ] minim 2-3 funcționalități suficient de complicate pe care un LLM nu le poate implementa
+- [x] minim o funcționalitate majoritar doar cu LLM
+- [x] minim 2-3 funcționalități ~50% voi, ~50% LLM-ul
+- [x] minim 2-3 funcționalități suficient de complicate pe care un LLM nu le poate implementa
 
 ### Tema 0
 
@@ -13,7 +43,7 @@
 - [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
 
 ## Tema 1
-
+g
 #### Cerințe
 - [x] definirea a minim **3-4 clase** folosind compunere cu clasele definite de voi
 - [x] constructori de inițializare
@@ -34,23 +64,23 @@
 
 #### Cerințe
 - [x] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
-- [ ] moșteniri:
+- [x] moșteniri:
   - minim o clasă de bază și **3 clase derivate**
   - ierarhia trebuie să fie cu bază proprie, nu derivată dintr-o clasă predefinită
-  - [ ] clasă cu atribut de tip pointer la o clasă de bază cu derivate
-  - [ ] funcții virtuale (pure) apelate prin pointeri de bază din clasa care conține atributul de tip pointer de bază
+  - [x] clasă cu atribut de tip pointer la o clasă de bază cu derivate
+  - [x] funcții virtuale (pure) apelate prin pointeri de bază din clasa care conține atributul de tip pointer de bază
     - minim o funcție virtuală va fi **specifică temei** (e.g. nu simple citiri/afișări)
     - constructori virtuali (clone): sunt necesari, dar nu se consideră funcții specifice temei
   - [x] apelarea constructorului din clasa de bază din constructori din derivate
   - [x] smart pointers (recomandat, opțional)
-  - [ ] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
+  - [x] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
 - [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
-- [ ] excepții
-  - [ ] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim **3** clase pentru erori specifice
-  - [ ] utilizare cu sens: de exemplu, `throw` în constructor (sau funcție care întoarce un obiect), `try`/`catch` în `main`
+- [x] excepții
+  - [x] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim **3** clase pentru erori specifice
+  - [x] utilizare cu sens: de exemplu, `throw` în constructor (sau funcție care întoarce un obiect), `try`/`catch` în `main`
 - [x] funcții și atribute `static`
 - [x] STL
-- [ ] cât mai multe `const`
+- [x] cât mai multe `const`
 - [ ] la sfârșit: commit separat cu adăugarea unei noi clase derivate fără a modifica restul codului, **pe lângă cele 3 derivate deja adăugate**
   - noua derivată nu poate fi una existentă care a fost ștearsă și adăugată din nou
 - [ ] tag de `git`: de exemplu `v0.2`
@@ -58,8 +88,8 @@
 ## Tema 3
 
 #### Cerințe
-- [ ] 2 șabloane de proiectare (design patterns)
-- [ ] o clasă șablon cu sens; minim **2 instanțieri**
+- [x] 2 șabloane de proiectare (design patterns)
+- [x] o clasă șablon cu sens; minim **2 instanțieri**
   - [ ] preferabil și o funcție șablon (template) cu sens; minim 2 instanțieri
 <!-- - [ ] o specializare pe funcție/clasă șablon -->
 - [ ] tag de `git`: de exemplu `v0.3` sau `v1.0`
