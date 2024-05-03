@@ -42,6 +42,7 @@ void Menu::display() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::P) {
                     handlePlay(window);
+                    return;
                 } else if (event.key.code == sf::Keyboard::S) {
                     // TODO
                 } else if (event.key.code == sf::Keyboard::Escape) {

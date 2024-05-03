@@ -48,6 +48,7 @@ private:
     static void generateDirection(EventData& eventData);
     void generate(EventData& eventData);
     static void renderVictory(sf::RenderWindow& window);
+    static void renderLose(sf::RenderWindow& window);
 
 public:
     Game() : gameOver(false) {

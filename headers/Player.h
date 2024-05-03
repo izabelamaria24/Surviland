@@ -87,6 +87,10 @@ public:
         totalMoney -= 10;
     }
 
+    bool isDead() {
+        return hp <= 0;
+    }
+
     [[nodiscard]] bool checkTime() const {
         return timeLeft > 0;
     }

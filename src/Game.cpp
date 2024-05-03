@@ -148,56 +148,84 @@ void Game::start(sf::RenderWindow& window) {
             renderVictory(window);
         }
 
-        if (gameOver) return;
+        if (player.isDead()) {
+            gameOver = true;
+            renderLose(window);
+        }
 
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::KeyPressed) {
-                player.decreaseTime();
-                EventData eventData;
-                time++;
-                if (event.key.code == sf::Keyboard::W) {
-                    eventData.name = "M";
-                    eventData.dir = 'U';
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::A) {
-                    eventData.name = "M";
-                    eventData.dir = 'L';
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::D) {
-                    eventData.name = "M";
-                    eventData.dir = 'R';
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::S) {
-                    eventData.name = "M";
-                    eventData.dir = 'D';
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::B) {
-                    eventData.name = "ATT";
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::L) {
-                    eventData.name = "UP";
-                    eventData.type = "L";
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::O) {
-                    eventData.name = "UP";
-                    eventData.type = "O";
-                    notifyObservers(eventData, "Player");
-                } else if (event.key.code == sf::Keyboard::Escape) {
+                if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
+                    return;
                 }
+            }
 
-                if (!player.checkTime())
-                    spawn();
+            if (!gameOver) {
+                if (event.type == sf::Event::KeyPressed) {
+                    player.decreaseTime();
+                    EventData eventData;
+                    time++;
+                    if (event.key.code == sf::Keyboard::W) {
+                        eventData.name = "M";
+                        eventData.dir = 'U';
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::A) {
+                        eventData.name = "M";
+                        eventData.dir = 'L';
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::D) {
+                        eventData.name = "M";
+                        eventData.dir = 'R';
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::S) {
+                        eventData.name = "M";
+                        eventData.dir = 'D';
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::B) {
+                        eventData.name = "ATT";
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::L) {
+                        eventData.name = "UP";
+                        eventData.type = "L";
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::O) {
+                        eventData.name = "UP";
+                        eventData.type = "O";
+                        notifyObservers(eventData, "Player");
+                    } else if (event.key.code == sf::Keyboard::Escape) {
+                        window.close();
+                    }
 
-                clearScreen(window);
-                render(window);
-                window.display();
+                    if (!player.checkTime())
+                        spawn();
+
+                    clearScreen(window);
+                    render(window);
+                    window.display();
+                }
             }
         }
     }
+}
+
+void Game::renderLose(sf::RenderWindow &window) {
+    sf::Texture loseTexture;
+    if (!loseTexture.loadFromFile("../assets/gameover.png")) {
+        // TODO throw exception
+    }
+
+    sf::RectangleShape loseItem(sf::Vector2f(500, 500));
+    loseItem.setTexture(&loseTexture);
+    loseItem.setOrigin(loseItem.getLocalBounds().width / 2, loseItem.getLocalBounds().height / 2);
+    loseItem.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 2);
+
+    window.clear();
+    window.draw(loseItem);
+    window.display();
 }
 
 void Game::renderVictory(sf::RenderWindow& window) {
@@ -207,8 +235,23 @@ void Game::renderVictory(sf::RenderWindow& window) {
     }
 
     sf::Text victoryText("VICTORY!", font, 35);
+    victoryText.setOrigin(victoryText.getLocalBounds().width / 2, victoryText.getLocalBounds().height / 2);
+    victoryText.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 4);
+
+    sf::Texture victoryTexture;
+    if (!victoryTexture.loadFromFile("../assets/trophy.png")) {
+        // TODO throw exception
+    }
+
+    sf::RectangleShape victoryItem(sf::Vector2f(300, 300));
+    victoryItem.setTexture(&victoryTexture);
+    float itemPosX = victoryText.getPosition().x - victoryItem.getLocalBounds().width / 2;
+    float itemPosY = victoryText.getPosition().y + victoryText.getLocalBounds().height / 2 + 30;
+    victoryItem.setPosition(itemPosX, itemPosY);
+
     window.clear();
     window.draw(victoryText);
+    window.draw(victoryItem);
     window.display();
 }
 
