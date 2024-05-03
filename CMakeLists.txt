@@ -127,7 +127,7 @@ endif()
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${PROJECT_NAME}
     main.cpp
-    generated/src/Helper.cpp
+    generated/include/Helper.h
     env_fixes.h
         headers/Game.h
         src/Menu.cpp
@@ -135,7 +135,6 @@ add_executable(${PROJECT_NAME}
         headers/Entity.h
         headers/Board.h
         headers/Enemy.h
-        headers/EntityBuilder.h
         headers/PowerUp.h
         headers/Controller.h
         src/Controller.cpp
