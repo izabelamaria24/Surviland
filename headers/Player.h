@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Entity.h"
-
-#include <cmath>
+#include <algorithm>
 
 class Player : public Entity {
 private:
