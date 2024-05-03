@@ -7,7 +7,6 @@ protected:
     int y;
     int hp;
 public:
-    Entity() = default;
     Entity(int x, int y, int hp) : x(x), y(y), hp(hp){};
 
     [[nodiscard]] int getX() const {
@@ -18,5 +17,5 @@ public:
         return y;
     }
 
-    friend class EntityBuilder;
+    virtual ~Entity() = default;
 };

@@ -130,9 +130,6 @@ add_executable(${PROJECT_NAME}
     generated/src/Helper.cpp
     env_fixes.h
         headers/Game.h
-        headers/GameMap.h
-        headers/GameMenu.h
-        headers/GameState.h
         src/Menu.cpp
         src/Game.cpp
         headers/Entity.h

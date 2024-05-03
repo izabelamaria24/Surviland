@@ -13,6 +13,8 @@ protected:
 public:
     Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false), lastHit(false){}
 
+    virtual ~Enemy(){};
+
     virtual void changeDirection(Board& board, Player& player) = 0;
     virtual void goBack(Board& board, Player& player) = 0;
 
@@ -20,9 +22,9 @@ public:
         dir = newDir;
     }
 
-    [[nodiscard]] char getDir() const {
-        return dir;
-    }
+//    [[nodiscard]] char getDir() const {
+//        return dir;
+//    }
 
     void activateHit() {
         lastHit = true;
@@ -72,6 +74,7 @@ public:
     DumbEnemy(int x, int y, int hp, int dmg, char dir) : Enemy(x, y, hp, dmg, dir){}
 
     void changeDirection(Board& board, Player& player) override {
+        std::cout << player.getMoney();
         if (dir == 'U' && x > 0) x--;
         if (dir == 'D' && x <= board.getHeight()) x++;
         if (dir == 'L' && y > 0) y--;
@@ -79,6 +82,7 @@ public:
     }
 
     void goBack(Board& board, Player& player) override {
+        std::cout << player.getMoney();
         if (dir == 'U' && x <= board.getHeight()) x++;
         if (dir == 'D' && x > 0) x--;
         if (dir == 'L' && y <= board.getWidth()) y++;
@@ -110,10 +114,13 @@ public:
     SmartEnemy(int x, int y, int hp, int dmg, char dir) : Enemy(x, y, hp, dmg, dir){}
 
     void changeDirection(Board& board, Player& player) override {
+        std::cout << board.getWidth();
         track(player);
     }
 
     void goBack(Board& board, Player& player) override {
+        std::cout << board.getWidth();
+        std::cout << player.getMoney();
         x = prevX;
         y = prevY;
     }

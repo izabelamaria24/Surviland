@@ -24,8 +24,8 @@ struct Category {
 
 class Board {
 private:
-    int width;
-    int height;
+    int width{};
+    int height{};
     std::vector<std::vector<char>>board;
     std::unordered_map<std::pair<int, int>, Category, PairHash> marks;
 
@@ -38,12 +38,6 @@ public:
         }
     };
     Board() = default;
-
-    void displayBoard() const {
-        for (int i = 1; i <= height; i++, std::cout << '\n')
-            for (int j = 1; j <= width; j++)
-                std::cout << board[i][j];
-    }
 
     [[nodiscard]] int getHeight() const {
         return height;
@@ -122,11 +116,11 @@ public:
         if (attribute == '$') marks[{x, y}].money += amount;
     }
 
-    void markPowerUps() {
-        for (int i = 1; i <= height; i++)
-            for (int j = 1; j <= width; j++)
-                checkAndUpdate(i, j);
-    }
+//    void markPowerUps() {
+//        for (int i = 1; i <= height; i++)
+//            for (int j = 1; j <= width; j++)
+//                checkAndUpdate(i, j);
+//    }
 
     bool powerUpExist(int x, int y) {
         return board[x][y] != 'H' && board[x][y] != 'A' && board[x][y] != 'M' && board[x][y] != 'F'

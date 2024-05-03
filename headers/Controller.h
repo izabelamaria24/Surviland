@@ -3,7 +3,7 @@
 #include <string>
 
 class Game;
-class EventData;
+struct EventData;
 
 class Observer {
 protected:
@@ -12,13 +12,15 @@ public:
     explicit Observer(Game& game) : game(game){}
 
     virtual void update(EventData& eventData) = 0;
+
+    virtual ~Observer() = default;
 };
 
 class PlayerController : public Observer {
 private:
     void spellAttack();
 
-    void attack(EventData& eventData);
+    void attack();
 
     void move(EventData& eventData);
 

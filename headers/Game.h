@@ -13,6 +13,7 @@
 #include <random>
 #include <string>
 #include <chrono>
+#include <algorithm>
 
 class Game : public GameTemplate<Game> {
   friend class GameTemplate<Game>;
@@ -20,9 +21,8 @@ class Game : public GameTemplate<Game> {
 private:
     std::vector<std::shared_ptr<Observer>> observers;
 
-    bool gameOver = false;
+    bool gameOver;
     int time = 0;
-    bool victory = false;
     std::string outputMessage;
 
     std::vector<std::shared_ptr<Enemy>>enemies;
@@ -44,12 +44,13 @@ private:
     void markPowerUps();
 
     std::pair<int, int> generateCoordinates();
-    std::pair<int, int> generateEnemyAttributes();
-    char generateDirection(EventData& eventData);
+    static std::pair<int, int> generateEnemyAttributes();
+    static void generateDirection(EventData& eventData);
     void generate(EventData& eventData);
+    static void renderVictory(sf::RenderWindow& window);
 
 public:
-    Game() {
+    Game() : gameOver(false) {
         // TODO try catch
         addObservers();
     }
@@ -76,9 +77,9 @@ public:
         board.update(player.getX(), player.getY(), '^');
     }
 
-    void start(sf::RenderWindow& window); // TODO
+    void start(sf::RenderWindow& window);
 
-    void clearScreen(sf::RenderWindow& window);  // TODO
+    static void clearScreen(sf::RenderWindow& window);
 
     std::pair<int, int> checkPlayerDirection();
 
@@ -112,10 +113,9 @@ public:
 
     void attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive);
 
-
     void collectResources();
 
-    void resetHit();
+    //    void resetHit();
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 

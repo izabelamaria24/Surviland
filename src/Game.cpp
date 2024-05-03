@@ -37,7 +37,6 @@ std::pair<int, int> Game::generateCoordinates() {
     int x = disX(gen);
     int y = disY(gen);
 
-    std::cout << "Enemy spawned at: " << x << " " << y << '\n';
     return std::make_pair(x, y);
 }
 
@@ -50,7 +49,7 @@ std::pair<int, int> Game::generateEnemyAttributes() {
     return std::make_pair(hp, dmg);
 }
 
-char Game::generateDirection(EventData& eventData) {
+void Game::generateDirection(EventData& eventData) {
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 gen(seed);
     std::uniform_int_distribution<int> dis(0, 3);
@@ -90,7 +89,6 @@ void Game::spawn() {
     int stopwatchThreshold = 93;
     int jackpotThreshold = 96;
     int dumbEnemyHoardThreshold = 98;
-    int smartEnemyHoardThreshold = 100;
 
     EventData eventData;
 
@@ -145,8 +143,14 @@ void Game::start(sf::RenderWindow& window) {
 
     while (window.isOpen()) {
         update();
+        if (checkVictory()) {
+            win();
+            renderVictory(window);
+        }
 
-        sf::Event event;
+        if (gameOver) return;
+
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -185,11 +189,10 @@ void Game::start(sf::RenderWindow& window) {
                     window.close();
                 }
 
-                std::cout << player.checkTime() << '\n';
                 if (!player.checkTime())
                     spawn();
 
-                window.clear();
+                clearScreen(window);
                 render(window);
                 window.display();
             }
@@ -197,7 +200,19 @@ void Game::start(sf::RenderWindow& window) {
     }
 }
 
-void Game::render(sf::RenderWindow &window) {
+void Game::renderVictory(sf::RenderWindow& window) {
+    sf::Font font;
+    if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
+        // TODO throw exception
+    }
+
+    sf::Text victoryText("VICTORY!", font, 35);
+    window.clear();
+    window.draw(victoryText);
+    window.display();
+}
+
+void Game::render(sf::RenderWindow& window) {
   sf::Font font;
   if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
     // TODO throw exception
@@ -278,7 +293,7 @@ void Game::render(sf::RenderWindow &window) {
     for (int i = 1; i <= board.getHeight(); ++i) {
         for (int j = 1; j <= board.getWidth(); ++j) {
             sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
-            cell.setPosition(i * cellSize, j * cellSize);
+            cell.setPosition(static_cast<float>(i) * cellSize, static_cast<float>(j) * cellSize);
             cell.setOutlineThickness(2);
             cell.setOutlineColor(sf::Color::Red);
             cell.setFillColor(sf::Color::White);
@@ -332,9 +347,9 @@ void Game::render(sf::RenderWindow &window) {
     std::vector<sf::RectangleShape> hpRectangles;
     std::vector<sf::RectangleShape> coinSprites;
 
-    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 30);
+    hpText.setPosition(static_cast<float>(window.getSize().x) - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 30);
 
-    float startX = window.getSize().x - 30 * (10 + 1) - 5 * 10;
+    float startX = static_cast<float>(window.getSize().x) - 30 * (10 + 1) - 5 * 10;
     float startY = hpText.getPosition().y + hpText.getLocalBounds().height + 20;
 
     for (int i = 0; i < 10; ++i) {
@@ -344,7 +359,7 @@ void Game::render(sf::RenderWindow &window) {
         else
             rect.setTexture(&emptyHeartTexture);
 
-        float posX = startX + i * (30 + 5);
+        float posX = startX + static_cast<float>(i) * (30 + 5);
         rect.setPosition(posX, startY);
         hpRectangles.push_back(rect);
     }
@@ -355,21 +370,21 @@ void Game::render(sf::RenderWindow &window) {
     sf::Text stopwatchText("Stopwatch activated: " + std::to_string(static_cast<int>(player.checkTime())), font, 35);
     sf::Text moneyText("Money: ", font, 35);
 
-    timeText.setPosition(window.getSize().x - timeText.getLocalBounds().width - 20, 20);
-    hpText.setPosition(window.getSize().x - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 20);
-    armorText.setPosition(window.getSize().x - armorText.getLocalBounds().width - 20, hpText.getPosition().y + hpText.getLocalBounds().height + 40);
-    rangeText.setPosition(window.getSize().x - rangeText.getLocalBounds().width - 20, armorText.getPosition().y + armorText.getLocalBounds().height + 20);
-    levelText.setPosition(window.getSize().x - levelText.getLocalBounds().width - 20, rangeText.getPosition().y + rangeText.getLocalBounds().height + 20);
-    stopwatchText.setPosition(window.getSize().x - stopwatchText.getLocalBounds().width - 20, levelText.getPosition().y + levelText.getLocalBounds().height + 20);
-    moneyText.setPosition(window.getSize().x - moneyText.getLocalBounds().width - 20, stopwatchText.getPosition().y + stopwatchText.getLocalBounds().height + 20);
+    timeText.setPosition(static_cast<float>(window.getSize().x) - timeText.getLocalBounds().width - 20, 20);
+    hpText.setPosition(static_cast<float>(window.getSize().x) - hpText.getLocalBounds().width - 20, timeText.getPosition().y + timeText.getLocalBounds().height + 20);
+    armorText.setPosition(static_cast<float>(window.getSize().x) - armorText.getLocalBounds().width - 20, hpText.getPosition().y + hpText.getLocalBounds().height + 40);
+    rangeText.setPosition(static_cast<float>(window.getSize().x) - rangeText.getLocalBounds().width - 20, armorText.getPosition().y + armorText.getLocalBounds().height + 20);
+    levelText.setPosition(static_cast<float>(window.getSize().x) - levelText.getLocalBounds().width - 20, rangeText.getPosition().y + rangeText.getLocalBounds().height + 20);
+    stopwatchText.setPosition(static_cast<float>(window.getSize().x) - stopwatchText.getLocalBounds().width - 20, levelText.getPosition().y + levelText.getLocalBounds().height + 20);
+    moneyText.setPosition(static_cast<float>(window.getSize().x) - moneyText.getLocalBounds().width - 20, stopwatchText.getPosition().y + stopwatchText.getLocalBounds().height + 20);
 
-    startX = window.getSize().x - 30 * (player.getMoney() + 1) - 5 * player.getMoney();
+    startX = static_cast<float>(window.getSize().x) - static_cast<float>(30 * (player.getMoney() + 1)) - static_cast<float>(5 * player.getMoney());
     startY = moneyText.getPosition().y + moneyText.getLocalBounds().height + 20;
 
     for (int i = 0; i < player.getMoney(); ++i) {
         sf::RectangleShape coinSprite(sf::Vector2f(30, 30));
         coinSprite.setTexture(&coinTexture);
-        coinSprite.setPosition(startX + i * (30 + 5), startY);
+        coinSprite.setPosition(startX + static_cast<float>(i) * (30 + 5), startY);
         coinSprites.push_back(coinSprite);
     }
 
@@ -405,14 +420,12 @@ void Game::update() {
 }
 
 bool Game::checkVictory() const {
-    return time >= 100;
+    return time >= 50;
 }
 
 void Game::win() {
-    victory = true;
     outputMessage = "VICTORY!";
     gameOver = true;
-    update();
 }
 
 void Game::markEnemies() {
@@ -450,12 +463,13 @@ bool Game::checkCollision(int x, int y) const {
             return true;
         }
     }
-    for (const auto &powerup : powerUps) {
-        if (powerup->getX() == x && powerup->getY() == y) {
-            return true;
-        }
-    }
 
+    bool hasPowerUp = std::any_of(powerUps.begin(), powerUps.end(), [&](const auto &powerup) {
+        return powerup->getX() == x && powerup->getY() == y;
+    });
+
+    if (hasPowerUp)
+        return true;
     return false;
 }
 
@@ -485,8 +499,8 @@ void Game::clearAttack() {
     int addX = checkPlayerDirection().first, addY = checkPlayerDirection().second;
     int newX = player.getX(), newY = player.getY();
 
-    const int dx[] = {-1, 1, 0, 0};
-    const int dy[] = {0, 0, -1, 1};
+//    const int dx[] = {-1, 1, 0, 0};
+//    const int dy[] = {0, 0, -1, 1};
 
     for (int i = 1; i <= player.getAbility(); i++) {
         newX += addX;
@@ -607,7 +621,7 @@ void Game::changeEnemiesDirection() {
             smartEnemy->modifyDirection(board.getPlayer(player));
         }
         else if (auto dumbEnemy = std::dynamic_pointer_cast<DumbEnemy>(enemy)) {
-            // do nothing
+            continue;
         }
         else {
             // TODO THROW EXCEPTION
@@ -624,13 +638,13 @@ void Game::markPowerUps() {
         if (pwrUp->dead()) add = 32;
 
             if (pwType == "H")
-                board.update(pwrUp->getX(), pwrUp->getY(), 'H' + add);
+                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('H' + add));
             if (pwrUp->getType() == "A")
-                board.update(pwrUp->getX(), pwrUp->getY(), 'A' + add);
+                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('A' + add));
             if (pwrUp->getType() == "M")
-                board.update(pwrUp->getX(), pwrUp->getY(), 'M' + add);
+                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('M' + add));
             if (pwrUp->getType() == "F")
-                board.update(pwrUp->getX(), pwrUp->getY(), 'F' + add);
+                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('F' + add));
 
 
             if (pwrUp->dead()) it = powerUps.erase(it);
@@ -658,12 +672,12 @@ void Game::addPowerup(int x, int y, int hp, std::string &type) {
     powerUps.emplace_back(newPowerup);
 }
 
-void Game::resetHit() {
-    for (auto &enemy: enemies)
-        enemy->undoHit();
-    for (auto& powerup : powerUps)
-        powerup->undoHit();
-}
+//void Game::resetHit() {
+//    for (auto &enemy: enemies)
+//        enemy->undoHit();
+//    for (auto& powerup : powerUps)
+//        powerup->undoHit();
+//}
 
 void Game::attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive) {
     for (auto &enemy: enemies) {
@@ -683,8 +697,6 @@ void Game::attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAl
 
 void Game::takePowerups(int x, int y, char sym) {
     for (auto &powerup: powerUps) {
-        std::cout << x << " " << y << '\n';
-        std::cout << powerup->getX() << " " << powerup->getY() << '\n';
         if (powerup->getX() == x && powerup->getY() == y) {
             if (!powerup->checkLastHit()) {
                 powerup->attack(sym, player.getAbility(), player.getSpell1(), player.availableSpell());

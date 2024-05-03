@@ -35,14 +35,11 @@ void PlayerController::spellAttack() {
     }
 }
 
-void PlayerController::attack(EventData& eventData) {
+void PlayerController::attack() {
     int addX = game.checkPlayerDirection().first, addY = game.checkPlayerDirection().second;
     int newX = game.getPlayer().getX(), newY = game.getPlayer().getY();
     int abilityRange = game.getPlayer().getRange();
     bool unlockedSpell = game.getPlayer().availableSpell();
-
-    const int dx[] = {-1, 1, 0, 0};
-    const int dy[] = {0, 0, -1, 1};
 
     for (int i = 1; i <= abilityRange; i++) {
         newX += addX;
@@ -168,7 +165,7 @@ void PlayerController::upgrade(EventData& eventData) {
 
 void PlayerController::update(EventData& eventData) {
     if (eventData.name == "ATT")
-        attack(eventData);
+        attack();
     if (eventData.name == "M")
         move(eventData);
     if (eventData.name == "UP")
