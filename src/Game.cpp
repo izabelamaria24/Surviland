@@ -667,7 +667,7 @@ void Game::addEnemy(int x, int y, int dmg, int hp, char dir, int type) {
     }
 }
 
-void Game::addPowerup(int x, int y, int hp, std::string &type) {
+void Game::addPowerup(int x, int y, int hp, const std::string &type) {
     auto newPowerup = std::make_shared<PowerUp>(x, y, hp, type);
     powerUps.emplace_back(newPowerup);
 }

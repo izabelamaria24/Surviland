@@ -65,7 +65,7 @@ void PlayerController::attack() {
 
             game.attackEnemies(newX, newY, 'L', enemyFound, stillAlive);
 
-            if (!enemyFound || (enemyFound && !stillAlive))
+            if (!enemyFound || !stillAlive)
                 if (game.getBoard().powerUpExist(newX, newY))
                     game.getBoard().update(newX, newY, 'L');
         }
@@ -80,7 +80,7 @@ void PlayerController::attack() {
     game.healEnemies();
 }
 
-void PlayerController::move(EventData& eventData) {
+void PlayerController::move(const EventData& eventData) {
         char dir = eventData.dir;
 
         game.clearAttack();
@@ -136,7 +136,7 @@ void PlayerController::move(EventData& eventData) {
         game.markEntities();
 }
 
-void PlayerController::upgrade(EventData& eventData) {
+void PlayerController::upgrade(const EventData& eventData) {
     if (eventData.type == "L") {
         if (!game.getPlayer().verifyAvailableUpgrades())
             game.updateOutputMessage("Not enough Ability Points! Go and slay more monsters!");
@@ -163,7 +163,7 @@ void PlayerController::upgrade(EventData& eventData) {
     }
 }
 
-void PlayerController::update(EventData& eventData) {
+void PlayerController::update(const EventData& eventData) {
     if (eventData.name == "ATT")
         attack();
     if (eventData.name == "M")
@@ -172,19 +172,19 @@ void PlayerController::update(EventData& eventData) {
         upgrade(eventData);
 }
 
-void EnemyController::spawnDumbEnemy(EventData &eventData) {
+void EnemyController::spawnDumbEnemy(const EventData &eventData) {
 //    game.moveEnemies();
     game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, eventData.dir, 1);
     game.markEntities();
 }
 
-void EnemyController::spawnSmartEnemy(EventData &eventData) {
+void EnemyController::spawnSmartEnemy(const EventData &eventData) {
 //    game.moveEnemies();
     game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, game.getBoard().getPlayer(game.getPlayer()), 2);
     game.markEntities();
 }
 
-void EnemyController::spawnDumbEnemyHoard(EventData& eventData) {
+void EnemyController::spawnDumbEnemyHoard(const EventData& eventData) {
 //    game.moveEnemies();
     int xSwf = eventData.x, ySwf = eventData.y;
     for (int i = 1; i <= 3; i++) {
@@ -195,7 +195,7 @@ void EnemyController::spawnDumbEnemyHoard(EventData& eventData) {
     game.markEntities();
 }
 
-void EnemyController::spawnSmartEnemyHoard(EventData &eventData) {
+void EnemyController::spawnSmartEnemyHoard(const EventData &eventData) {
 //    game.moveEnemies();
 
     int height = game.getBoard().getHeight();
@@ -211,7 +211,7 @@ void EnemyController::spawnSmartEnemyHoard(EventData &eventData) {
     game.markEntities();
 }
 
-void EnemyController::update(EventData &eventData) {
+void EnemyController::update(const EventData &eventData) {
     if (eventData.name == "SF") {
         spawnDumbEnemy(eventData);
     }
@@ -229,14 +229,14 @@ void EnemyController::update(EventData &eventData) {
     }
 }
 
-void PowerUpController::spawnPowerup(EventData &eventData) {
+void PowerUpController::spawnPowerup(const EventData &eventData) {
 //    game.moveEnemies();
     game.addPowerup(eventData.x, eventData.y, eventData.hp, eventData.type);
     game.clearAttack();
     game.markEntities();
 }
 
-void PowerUpController::update(EventData& eventData) {
+void PowerUpController::update(const EventData& eventData) {
     spawnPowerup(eventData);
 }
 

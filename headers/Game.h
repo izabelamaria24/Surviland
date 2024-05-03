@@ -71,7 +71,7 @@ public:
         return player;
     }
 
-    void build(Board& initialBoard, Player& initialPlayer) {
+    void build(const Board& initialBoard, const Player& initialPlayer) {
         board = initialBoard;
         player = initialPlayer;
         board.update(player.getX(), player.getY(), '^');
@@ -93,7 +93,7 @@ public:
 
     void addEnemy(int x, int y, int dmg, int hp, char dir, int type);
 
-    void addPowerup(int x, int y, int hp, std::string& type);
+    void addPowerup(int x, int y, int hp, const std::string& type);
 
     void moveEnemies();
 

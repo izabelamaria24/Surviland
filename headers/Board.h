@@ -51,7 +51,7 @@ public:
         board[x][y] = c;
     }
 
-    char getPlayer(Player& player) const {
+    char getPlayer(const Player& player) const {
         return board[player.getX()][player.getY()];
     }
 

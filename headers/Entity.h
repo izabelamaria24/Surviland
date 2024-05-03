@@ -7,6 +7,7 @@ protected:
     int y;
     int hp;
 public:
+    Entity() : x(0), y(0), hp(10){};
     Entity(int x, int y, int hp) : x(x), y(y), hp(hp){};
 
     [[nodiscard]] int getX() const {

@@ -11,7 +11,7 @@ protected:
 public:
     explicit Observer(Game& game) : game(game){}
 
-    virtual void update(EventData& eventData) = 0;
+    virtual void update(const EventData& eventData) = 0;
 
     virtual ~Observer() = default;
 };
@@ -22,38 +22,38 @@ private:
 
     void attack();
 
-    void move(EventData& eventData);
+    void move(const EventData& eventData);
 
-    void upgrade(EventData& eventData);
+    void upgrade(const EventData& eventData);
 
 public:
     explicit PlayerController(Game& game) : Observer(game){}
 
-    void update(EventData& eventData) override;
+    void update(const EventData& eventData) override;
 };
 
 class EnemyController : public Observer {
 private:
-    void spawnDumbEnemy(EventData& eventData);
+    void spawnDumbEnemy(const EventData& eventData);
 
-    void spawnSmartEnemy(EventData& eventData);
+    void spawnSmartEnemy(const EventData& eventData);
 
-    void spawnDumbEnemyHoard(EventData& eventData);
+    void spawnDumbEnemyHoard(const EventData& eventData);
 
-    void spawnSmartEnemyHoard(EventData& eventData);
+    void spawnSmartEnemyHoard(const EventData& eventData);
 
 public:
     explicit EnemyController(Game& game) : Observer(game){}
 
-    void update(EventData& eventData) override;
+    void update(const EventData& eventData) override;
 };
 
 class PowerUpController : public Observer {
 private:
-    void spawnPowerup(EventData& eventData);
+    void spawnPowerup(const EventData& eventData);
 
 public:
     explicit PowerUpController(Game& game) : Observer(game){}
 
-    void update(EventData& eventData) override;
+    void update(const EventData& eventData) override;
 };

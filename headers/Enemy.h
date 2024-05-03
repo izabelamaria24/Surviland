@@ -13,8 +13,6 @@ protected:
 public:
     Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false), lastHit(false){}
 
-    virtual ~Enemy(){};
-
     virtual void changeDirection(Board& board, Player& player) = 0;
     virtual void goBack(Board& board, Player& player) = 0;
 
@@ -30,9 +28,9 @@ public:
         lastHit = true;
     }
 
-    void undoHit() {
-        lastHit = false;
-    }
+//    void undoHit() {
+//        lastHit = false;
+//    }
 
     [[nodiscard]] bool checkLastHit() const {
         return lastHit;
@@ -104,7 +102,7 @@ private:
 
         if (x > playerX) x--;
         else if (x < playerX) x++;
-        else if (x == playerX) {
+        else {
             if (y > playerY) y--;
             else y++;
         }

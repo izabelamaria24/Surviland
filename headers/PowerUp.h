@@ -1,14 +1,16 @@
 #pragma once
 
+#include <utility>
+
 #include "Entity.h"
 
 class PowerUp : public Entity{
 private:
-    std::string type;
+    const std::string type;
     bool lastHit;
 public:
     PowerUp() : Entity(), lastHit(false){}
-    PowerUp(int x, int y, int hp, std::string& type) : Entity(x, y, hp), type(type), lastHit(false){};
+    PowerUp(int x, int y, int hp, std::string  type) : Entity(x, y, hp), type(std::move(type)), lastHit(false){};
 
     [[nodiscard]] std::string getType() const {
         return type;
@@ -26,9 +28,9 @@ public:
         lastHit = true;
     }
 
-    void undoHit() {
-        lastHit = false;
-    }
+//    void undoHit() {
+//        lastHit = false;
+//    }
 
     [[nodiscard]] bool checkLastHit() const {
         return lastHit;
