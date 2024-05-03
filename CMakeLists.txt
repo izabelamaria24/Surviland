@@ -139,6 +139,7 @@ add_executable(${PROJECT_NAME}
         headers/Controller.h
         src/Controller.cpp
         headers/EventData.h
+        headers/Exceptions.h
 )
 
 ###############################################################################

@@ -7,6 +7,7 @@
 #include "PowerUp.h"
 #include "EventData.h"
 #include "Controller.h"
+#include "Exceptions.h"
 
 #include <iostream>
 #include <memory>
@@ -50,11 +51,13 @@ private:
     static void renderVictory(sf::RenderWindow& window);
     static void renderLose(sf::RenderWindow& window);
 
+    std::shared_ptr<Enemy> checkEnemy(int x, int y);
+
 public:
     Game() : gameOver(false) {
-        // TODO try catch
         addObservers();
     }
+
     Game& operator=(const Game&) = delete;
     Game(const Game&) = delete;
 
@@ -115,8 +118,6 @@ public:
     void attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive);
 
     void collectResources();
-
-    //    void resetHit();
 
     [[nodiscard]] bool checkCollision(int x, int y) const;
 

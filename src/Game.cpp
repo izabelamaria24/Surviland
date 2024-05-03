@@ -11,14 +11,20 @@ void Game::notifyObservers(EventData &eventData, const std::string &observerType
         if (observerType == "Player") {
             if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
                 playerObserver->update(eventData);
+            } else {
+                throw CastError("Failed to cast Observer to PlayerController");
             }
         } else if (observerType == "Enemy") {
             if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
                 enemyObserver->update(eventData);
+            } else {
+                throw CastError("Failed to cast Observer to EnemyController");
             }
         } else if (observerType == "PowerUp") {
             if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
                 powerUpObserver->update(eventData);
+            } else {
+                throw CastError("Failed to cast Observer to PowerUpController");
             }
         }
     }
@@ -91,9 +97,7 @@ void Game::spawn() {
     int dumbEnemyHoardThreshold = 98;
 
     EventData eventData;
-
     time++;
-    // TODO throw exception if there are no empty cells left
 
     if (randomNum < dumbEnemyThreshold) {
         eventData.name = "SF";
@@ -215,7 +219,7 @@ void Game::start(sf::RenderWindow& window) {
 void Game::renderLose(sf::RenderWindow &window) {
     sf::Texture loseTexture;
     if (!loseTexture.loadFromFile("../assets/gameover.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::RectangleShape loseItem(sf::Vector2f(500, 500));
@@ -231,7 +235,7 @@ void Game::renderLose(sf::RenderWindow &window) {
 void Game::renderVictory(sf::RenderWindow& window) {
     sf::Font font;
     if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
-        // TODO throw exception
+        throw FontError("Can not load font");
     }
 
     sf::Text victoryText("VICTORY!", font, 35);
@@ -240,7 +244,7 @@ void Game::renderVictory(sf::RenderWindow& window) {
 
     sf::Texture victoryTexture;
     if (!victoryTexture.loadFromFile("../assets/trophy.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::RectangleShape victoryItem(sf::Vector2f(300, 300));
@@ -255,81 +259,89 @@ void Game::renderVictory(sf::RenderWindow& window) {
     window.display();
 }
 
+std::shared_ptr<Enemy> Game::checkEnemy(int x, int y) {
+    for (auto& enemy: enemies)
+        if (enemy->getX() == x && enemy->getY() == y) return enemy;
+
+    throw GameError("No enemy found");
+    return nullptr;
+}
+
 void Game::render(sf::RenderWindow& window) {
   sf::Font font;
   if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
-    // TODO throw exception
+    throw FontError("Can not load font");
   }
 
     // Load the background image
     sf::Texture playerTexture;
     if (!playerTexture.loadFromFile("../assets/hogrider.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture dumbEnemyTexture;
     if (!dumbEnemyTexture.loadFromFile("../assets/hogrider.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture smartEnemyTexture;
     if (!smartEnemyTexture.loadFromFile("../assets/smartenemy.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture spellTexture;
     if (!spellTexture.loadFromFile("../assets/spell.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture attackTexture;
     if (!attackTexture.loadFromFile("../assets/attack.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture deadEnemyTexture;
     if (!deadEnemyTexture.loadFromFile("../assets/dead.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture moneyTexture;
     if (!moneyTexture.loadFromFile("../assets/money.jpg")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture jackpotTexture;
     if (!jackpotTexture.loadFromFile("../assets/jackpot.jpg")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture stopwatchTexture;
     if (!stopwatchTexture.loadFromFile("../assets/stopwatch.jpg")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture armorTexture;
     if (!armorTexture.loadFromFile("../assets/armor.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture healTexture;
     if (!healTexture.loadFromFile("../assets/hp.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture heartTexture;
     if (!heartTexture.loadFromFile("../assets/heart.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture emptyHeartTexture;
     if (!emptyHeartTexture.loadFromFile("../assets/empty_heart.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
     sf::Texture coinTexture;
     if (!coinTexture.loadFromFile("../assets/coin.png")) {
-        // TODO throw exception
+        throw TextureError("Can not load asset");
     }
 
   const int cellSize = 80;
@@ -356,8 +368,15 @@ void Game::render(sf::RenderWindow& window) {
             else if (board.checkValue(j, i, 'x'))
                 cell.setTexture(&deadEnemyTexture);
             else if (board.checkValue(j, i, '+')) {
-                // TODO check if smart enemy or dumb enemy
-                cell.setTexture(&smartEnemyTexture);
+                std::shared_ptr<Enemy> temp = checkEnemy(j, i);
+                if (auto smartEnemy = std::dynamic_pointer_cast<SmartEnemy>(temp)) {
+                    cell.setTexture(&smartEnemyTexture);
+                }
+                else if (auto dumbEnemy = std::dynamic_pointer_cast<DumbEnemy>(temp)) {
+                    cell.setTexture(&dumbEnemyTexture);
+                } else {
+                    throw CastError("Failed to cast Enemy into SmartEnemy or DumbEnemy");
+                }
             }
 
             // powerups
@@ -490,7 +509,6 @@ void Game::moveEnemies() {
         if (!(x == player.getX() && y == player.getY())) {
             board.checkAndUpdate(enemy->getX(), enemy->getY());
             if (board.noMarks(enemy->getX(), enemy->getY())) board.update(enemy->getX(), enemy->getY(), '.');
-            // TODO CHECK IF board[x][y] has powerup
             enemy->changeDirection(board, player);
         } else {
             if (enemy->isAlive() && !board.checkValue(enemy->getX(), enemy->getY(), 'L')) {
@@ -667,7 +685,7 @@ void Game::changeEnemiesDirection() {
             continue;
         }
         else {
-            // TODO THROW EXCEPTION
+            throw CastError("Failed to cast Enemy into Smart or Dumb Enemy");
         }
     }
 }
