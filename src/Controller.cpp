@@ -1,5 +1,7 @@
 #include "../headers/Controller.h"
 #include "../headers/Game.h"
+#include "../headers/DumbEnemy.h"
+#include "../headers/SmartEnemy.h"
 
 void PlayerController::spellAttack() {
     int x = game.getPlayer().getX(), y = game.getPlayer().getY();
@@ -173,21 +175,32 @@ void PlayerController::update(const EventData& eventData) {
 }
 
 void EnemyController::spawnDumbEnemy(const EventData &eventData) {
-    game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, eventData.dir, 1);
+    std::shared_ptr<Enemy> newEnemy = std::make_shared<DumbEnemy>(eventData.x, eventData.y, eventData.dmg,
+                                                                   eventData.hp, eventData.dir);
+    game.addEnemy(newEnemy);
     game.markEntities();
 }
 
 void EnemyController::spawnSmartEnemy(const EventData &eventData) {
-    game.addEnemy(eventData.x, eventData.y, eventData.dmg, eventData.hp, game.getBoard().getPlayer(game.getPlayer()), 2);
+    std::shared_ptr<Enemy> newEnemy = std::make_shared<SmartEnemy>(eventData.x, eventData.y, eventData.dmg,
+                                                                    eventData.hp, game.getBoard().getPlayer(game.getPlayer()));
+    game.addEnemy(newEnemy);
     game.markEntities();
 }
 
 void EnemyController::spawnDumbEnemyHoard(const EventData& eventData) {
     int xSwf = eventData.x, ySwf = eventData.y;
-    for (int i = 1; i <= 3; i++) {
-        game.addEnemy(xSwf, ySwf, eventData.dmg, eventData.hp, eventData.dir, 1);
-        ySwf++;
-    }
+
+    std::shared_ptr<Enemy> newEnemy1 = std::make_shared<DumbEnemy>(xSwf, ySwf, eventData.dmg, eventData.hp, eventData.dir);
+    std::shared_ptr<Enemy> newEnemy2 = newEnemy1->clone();
+    newEnemy2->moveOneStep(xSwf, ySwf + 1);
+    std::shared_ptr<Enemy> newEnemy3 = newEnemy1->clone();
+    newEnemy3->moveOneStep(xSwf, ySwf + 2);
+
+    game.addEnemy(newEnemy1);
+    game.addEnemy(newEnemy2);
+    game.addEnemy(newEnemy3);
+
     game.clearAttack();
     game.markEntities();
 }
@@ -199,8 +212,14 @@ void EnemyController::spawnSmartEnemyHoard(const EventData &eventData) {
     const int coordX[] = {1, 1, height, height};
     const int coordY[] = {width, 1, width, 1};
 
-    for (int coord = 0; coord < 4; coord++)
-        game.addEnemy(coordX[coord], coordY[coord], eventData.dmg, eventData.hp, game.getBoard().getPlayer(game.getPlayer()), 2);
+    std::shared_ptr<Enemy> newEnemy0 = std::make_shared<SmartEnemy>(coordX[0], coordY[0], eventData.hp, eventData.dmg,
+                                                                    game.getBoard().getPlayer(game.getPlayer()));
+    game.addEnemy(newEnemy0);
+
+    for (int coord = 1; coord < 4; coord++) {
+        std::shared_ptr<Enemy> newEnemy = newEnemy0->clone();
+        newEnemy->moveOneStep(coordX[coord], coordY[coord]);
+    }
 
     game.clearAttack();
     game.markEntities();

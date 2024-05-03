@@ -33,4 +33,17 @@ public:
     [[nodiscard]] int attackDamage() const;
 
     void decreaseAttackDamage();
+
+    void moveOneStep(int x, int y);
+
+//    friend void swap(Enemy& e1, Enemy& e2) {
+//        using std::swap;
+//        swap(static_cast<Entity&>(e1), static_cast<Entity&>(e2));
+//        swap(e1.dmg, e2.dmg);
+//        swap(e1.dir, e2.dir);
+//        swap(e1.hit, e2.hit);
+//        swap(e1.lastHit, e2.lastHit);
+//    }
+
+    virtual std::shared_ptr<Enemy> clone() const = 0;
 };

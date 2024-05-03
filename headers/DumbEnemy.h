@@ -8,4 +8,8 @@ public:
 
     void changeDirection(Board& board, Player& player) override;
     void goBack(Board& board, Player& player) override;
+
+    std::shared_ptr<Enemy> clone() const override {
+        return std::make_shared<DumbEnemy>(*this);
+    }
 };

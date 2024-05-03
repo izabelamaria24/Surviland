@@ -13,20 +13,14 @@ void Game::notifyObservers(EventData &eventData, const std::string &observerType
         if (observerType == "Player") {
             if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
                 playerObserver->update(eventData);
-            } else {
-                throw CastError("Failed to cast Observer to PlayerController");
             }
         } else if (observerType == "Enemy") {
             if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
                 enemyObserver->update(eventData);
-            } else {
-                throw CastError("Failed to cast Observer to EnemyController");
             }
         } else if (observerType == "PowerUp") {
             if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
                 powerUpObserver->update(eventData);
-            } else {
-                throw CastError("Failed to cast Observer to PowerUpController");
             }
         }
     }
@@ -87,16 +81,17 @@ void Game::spawn() {
 
     int randomNum = dis(gen);
 
-    if (randomNum < 70) return;
+    if (randomNum < 50) return;
 
     // probabilities
-    int dumbEnemyThreshold = 75;
-    int smartEnemyThreshold = 80;
-    int healThreshold = 85;
-    int armorThreshold = 89;
-    int stopwatchThreshold = 93;
-    int jackpotThreshold = 96;
-    int dumbEnemyHoardThreshold = 98;
+    int dumbEnemyThreshold = 60;
+    int smartEnemyThreshold = 77;
+    int healThreshold = 79;
+    int armorThreshold = 81;
+    int stopwatchThreshold = 85;
+    int jackpotThreshold = 87;
+    int dumbEnemyHoardThreshold = 92;
+    int smartEnemyHoardThreshold = 95;
 
     EventData eventData;
     time++;
@@ -133,7 +128,7 @@ void Game::spawn() {
         eventData.name = "SWF";
         generate(eventData);
         notifyObservers(eventData, "Enemy");
-    } else {
+    } else if (randomNum < smartEnemyHoardThreshold){
         eventData.name = "SWT";
         generate(eventData);
         notifyObservers(eventData, "Enemy");
@@ -275,8 +270,23 @@ void Game::render(sf::RenderWindow& window) {
   }
 
     // Load the background image
-    sf::Texture playerTexture;
-    if (!playerTexture.loadFromFile("../assets/hogrider.png")) {
+    sf::Texture playerTextureUp;
+    if (!playerTextureUp.loadFromFile("../assets/up_penguin.png")) {
+        throw TextureError("Can not load asset");
+    }
+
+    sf::Texture playerTextureDown;
+    if (!playerTextureDown.loadFromFile("../assets/down_penguin.png")) {
+        throw TextureError("Can not load asset");
+    }
+
+    sf::Texture playerTextureLeft;
+    if (!playerTextureLeft.loadFromFile("../assets/left_penguin.png")) {
+        throw TextureError("Can not load asset");
+    }
+
+    sf::Texture playerTextureRight;
+    if (!playerTextureRight.loadFromFile("../assets/right_penguin.jpg")) {
         throw TextureError("Can not load asset");
     }
 
@@ -356,7 +366,20 @@ void Game::render(sf::RenderWindow& window) {
 
             // player
             if (player.getX() == j && player.getY() == i) {
-                cell.setTexture(&playerTexture);
+
+                if (board.checkValue(player.getX(), player.getY(), '^'))
+                    cell.setTexture(&playerTextureUp);
+
+                else if (board.checkValue(player.getX(), player.getY(), '<'))
+                    cell.setTexture(&playerTextureLeft);
+
+                else if (board.checkValue(player.getX(), player.getY(), '>'))
+                    cell.setTexture(&playerTextureRight);
+
+                else if (board.checkValue(player.getX(), player.getY(), 'v'))
+                    cell.setTexture(&playerTextureDown);
+
+                else cell.setTexture(&playerTextureRight);
             }
 
             // attacks
@@ -483,7 +506,7 @@ void Game::update() {
 }
 
 bool Game::checkVictory() const {
-    return time >= 50;
+    return time >= 250;
 }
 
 void Game::win() {
@@ -719,27 +742,14 @@ void Game::markEntities() {
     markEnemies();
 }
 
-void Game::addEnemy(int x, int y, int dmg, int hp, char dir, int type) {
-    if (type == 1) {
-        auto newEnemy = std::make_shared<DumbEnemy>(x, y, dmg, hp, dir);
-        enemies.emplace_back(newEnemy);
-    } else {
-        auto newEnemy = std::make_shared<SmartEnemy>(x, y, dmg, hp, dir);
-        enemies.emplace_back(newEnemy);
-    }
+void Game::addEnemy(std::shared_ptr<Enemy>newEnemy) {
+    enemies.emplace_back(newEnemy);
 }
 
 void Game::addPowerup(int x, int y, int hp, const std::string &type) {
     auto newPowerup = std::make_shared<PowerUp>(x, y, hp, type);
     powerUps.emplace_back(newPowerup);
 }
-
-//void Game::resetHit() {
-//    for (auto &enemy: enemies)
-//        enemy->undoHit();
-//    for (auto& powerup : powerUps)
-//        powerup->undoHit();
-//}
 
 void Game::attackEnemies(int x, int y, char sym, bool& enemyFound, bool& stillAlive) {
     for (auto &enemy: enemies) {

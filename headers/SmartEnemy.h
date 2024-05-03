@@ -15,4 +15,9 @@ public:
     void changeDirection(Board& board, Player& player) override;
 
     void goBack(Board& board, Player& player) override;
+
+    std::shared_ptr<Enemy> clone() const override {
+        std::cout << "Smart enemy cloned!\n";
+        return std::make_shared<SmartEnemy>(*this);
+    }
 };

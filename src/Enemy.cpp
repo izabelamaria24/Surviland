@@ -12,6 +12,11 @@ bool Enemy::checkLastHit() const {
     return lastHit;
 }
 
+void Enemy::moveOneStep(int x1, int y1) {
+    x = x1;
+    y = y1;
+}
+
 void Enemy::hitEnemy(char symbol, int att1, int att2, bool spell) {
     hit = true;
     if (symbol == 'L') {
