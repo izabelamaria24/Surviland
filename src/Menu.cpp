@@ -17,7 +17,7 @@ void Menu::display() {
 
   sf::Font font;
   if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
-     throw FontError("Could not load font!");
+     throw FontError("Could not load menu font!");
   }
 
   // game title

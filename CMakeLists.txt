@@ -201,10 +201,8 @@ endif()
 # copy binaries to "bin" folder; these are uploaded as artifacts on each release
 # update name in .github/workflows/cmake.yml:29 when changing "bin" name here
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-install(FILES fonts/Roboto-Black.ttf assets/trophy.png assets/armor.png assets/attack.png assets/coin.png assets/dead.png
-        assets/down_penguin.png assets/empty_heart.png assets/gameover.png assets/heart.png assets/hoe.jpg assets/hogrider.png
-        assets/hp.png assets/jackpot.jpg assets/left_penguin.png assets/money.jpg assets/portal.png assets/right_penguin.jpg
-        assets/smartenemy.png assets/spell.png assets/stopwatch.jpg assets/up_penguin.png DESTINATION bin)
+
+install(DIRECTORY fonts assets DESTINATION bin)
 
 if(APPLE)
     install(FILES launcher.command DESTINATION bin)

@@ -218,7 +218,7 @@ void Game::start(sf::RenderWindow& window) {
 
 void Game::renderLose(sf::RenderWindow &window) {
     sf::Texture loseTexture;
-    if (!loseTexture.loadFromFile("assets/gameover.png")) {
+    if (!loseTexture.loadFromFile("../assets/gameover.png")) {
         throw TextureError("Can not load asset");
     }
 
@@ -267,10 +267,10 @@ std::shared_ptr<Enemy> Game::checkEnemy(int x, int y) {
 }
 
 void Game::render(sf::RenderWindow& window) {
-  sf::Font font;
-  if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
-    throw FontError("Can not load font");
-  }
+    sf::Font font;
+    if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+        throw FontError("Can not load font");
+    }
 
     // Load the background image
     sf::Texture playerTextureUp;
@@ -363,7 +363,7 @@ void Game::render(sf::RenderWindow& window) {
         throw TextureError("Can not load asset");
     }
 
-  const int cellSize = 80;
+    const int cellSize = 80;
     for (int i = 1; i <= board.getHeight(); ++i) {
         for (int j = 1; j <= board.getWidth(); ++j) {
             sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
@@ -387,13 +387,13 @@ void Game::render(sf::RenderWindow& window) {
                 else cell.setTexture(&playerTextureRight);
             }
 
-            // attacks
+                // attacks
             else if (board.checkValue(j, i, 'O'))
                 cell.setTexture(&spellTexture);
             else if (board.checkValue(j, i, 'L'))
                 cell.setTexture(&attackTexture);
 
-            // enemies
+                // enemies
             else if (board.checkValue(j, i, 'x'))
                 cell.setTexture(&deadEnemyTexture);
             else if (board.checkValue(j, i, '+')) {
@@ -412,7 +412,7 @@ void Game::render(sf::RenderWindow& window) {
                 cell.setTexture(&portalTexture);
             }
 
-            // powerups
+                // powerups
             else if (board.checkValue(j, i, '$')) {
                 cell.setTexture(&moneyTexture);
             }
@@ -430,7 +430,7 @@ void Game::render(sf::RenderWindow& window) {
             }
 
             if (board.checkValue(j, i, 'm') || board.checkValue(j, i, 'f') || board.checkValue(j, i, 'a')
-            || board.checkValue(j, i, 'h') || board.checkValue(j, i, '$')) cell.setOutlineColor(sf::Color::Green);
+                || board.checkValue(j, i, 'h') || board.checkValue(j, i, '$')) cell.setOutlineColor(sf::Color::Green);
 
             window.draw(cell);
         }
@@ -758,18 +758,18 @@ void Game::markPowerUps() {
         int add = 0;
         if (pwrUp->dead()) add = 32;
 
-            if (pwType == "H")
-                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('H' + add));
-            if (pwrUp->getType() == "A")
-                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('A' + add));
-            if (pwrUp->getType() == "M")
-                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('M' + add));
-            if (pwrUp->getType() == "F")
-                board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('F' + add));
+        if (pwType == "H")
+            board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('H' + add));
+        if (pwrUp->getType() == "A")
+            board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('A' + add));
+        if (pwrUp->getType() == "M")
+            board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('M' + add));
+        if (pwrUp->getType() == "F")
+            board.update(pwrUp->getX(), pwrUp->getY(), static_cast<char>('F' + add));
 
 
-            if (pwrUp->dead()) it = powerUps.erase(it);
-            else it++;
+        if (pwrUp->dead()) it = powerUps.erase(it);
+        else it++;
     }
 }
 
@@ -838,4 +838,3 @@ void Game::build(const Board &initialBoard, const Player &initialPlayer) {
 void Game::updateOutputMessage(const std::string &m) {
     outputMessage = m;
 }
-
