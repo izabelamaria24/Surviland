@@ -18,6 +18,8 @@ public:
         return y;
     }
 
+    Entity(const Entity& other) = default;
+
     Entity& operator=(Entity other) {
         swap(*this, other);
         return *this;
@@ -31,4 +33,4 @@ public:
     }
 
     virtual ~Entity() = default;
-};
+};g
