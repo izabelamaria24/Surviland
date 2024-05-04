@@ -40,10 +40,10 @@ Mastering these controls is essential for navigating the challenging terrain and
 ### Tema 0
 
 - [x] Nume proiect (poate fi schimbat ulterior)
-- [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
+- [x] Scurtă descriere a temei alese, ce v-ați propus să implementați
 
 ## Tema 1
-g
+
 #### Cerințe
 - [x] definirea a minim **3-4 clase** folosind compunere cu clasele definite de voi
 - [x] constructori de inițializare

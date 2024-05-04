@@ -88,7 +88,7 @@ public:
 
     void updateOutputMessage(const std::string& m);
 
-    void addEnemy(std::shared_ptr<Enemy>);
+    void addEnemy(const std::shared_ptr<Enemy>& newEnemy);
 
     void addPowerup(int x, int y, int hp, const std::string& type);
 

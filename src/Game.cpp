@@ -373,9 +373,6 @@ void Game::render(sf::RenderWindow& window) {
                 else if (board.checkValue(player.getX(), player.getY(), '<'))
                     cell.setTexture(&playerTextureLeft);
 
-                else if (board.checkValue(player.getX(), player.getY(), '>'))
-                    cell.setTexture(&playerTextureRight);
-
                 else if (board.checkValue(player.getX(), player.getY(), 'v'))
                     cell.setTexture(&playerTextureDown);
 
@@ -742,7 +739,7 @@ void Game::markEntities() {
     markEnemies();
 }
 
-void Game::addEnemy(std::shared_ptr<Enemy>newEnemy) {
+void Game::addEnemy(const std::shared_ptr<Enemy>& newEnemy) {
     enemies.emplace_back(newEnemy);
 }
 

@@ -69,5 +69,28 @@ public:
     [[nodiscard]] int getRange() const;
 
     void increaseAvailableUpgrades();
+
+    Player(const Player& other) = default;
+
+    Player& operator=(Player other) noexcept {
+        swap(*this, other);
+        return *this;
+    }
+
+    friend void swap(Player& p1, Player& p2) {
+        using std::swap;
+        swap(static_cast<Entity&>(p1), static_cast<Entity&>(p2));
+        swap(p1.level, p2.level);
+        swap(p1.armor, p2.armor);
+        swap(p1.totalMoney, p2.totalMoney);
+        swap(p1.spellFeature1, p2.spellFeature1);
+        swap(p1.spellFeature2, p2.spellFeature2);
+        swap(p1.ability, p2.ability);
+        swap(p1.abilityRange, p2.abilityRange);
+        swap(p1.unlockedSpell, p2.unlockedSpell);
+        swap(p1.availableAbilityUpgrades, p2.availableAbilityUpgrades);
+        swap(p1.upgrade, p2.upgrade);
+        swap(p1.spellUpgrade, p2.spellUpgrade);
+    }
 };
 

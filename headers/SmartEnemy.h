@@ -16,8 +16,21 @@ public:
 
     void goBack(Board& board, Player& player) override;
 
-    std::shared_ptr<Enemy> clone() const override {
-        std::cout << "Smart enemy cloned!\n";
-        return std::make_shared<SmartEnemy>(*this);
+    SmartEnemy(const SmartEnemy& other) = default;
+
+    SmartEnemy& operator=(SmartEnemy other) noexcept {
+        swap(*this, other);
+        return *this;
     }
+
+    friend void swap(SmartEnemy& e1, SmartEnemy& e2) {
+        using std::swap;
+        swap(static_cast<Enemy&>(e1), static_cast<Enemy&>(e2));
+        swap(e1.dmg, e2.dmg);
+        swap(e1.dir, e2.dir);
+        swap(e1.hit, e2.hit);
+        swap(e1.lastHit, e2.lastHit);
+    }
+
+    [[nodiscard]] std::shared_ptr<Enemy> clone() const override { return std::make_shared<SmartEnemy>(*this); }
 };

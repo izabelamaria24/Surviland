@@ -6,7 +6,7 @@
 
 class PowerUp : public Entity{
 private:
-    const std::string type;
+    std::string type;
     bool lastHit;
 public:
     PowerUp() : Entity(), lastHit(false){}
@@ -18,8 +18,8 @@ public:
 
     void attack(char symbol, int att1, int att2, bool spell) {
         if (symbol == 'L') {
-            hp-=att1; // ability
-            if (spell) hp -= att2; // spellFeature1
+            hp -= att1;
+            if (spell) hp -= att2;
         }
         else hp -= att2;
     }
@@ -28,15 +28,25 @@ public:
         lastHit = true;
     }
 
-//    void undoHit() {
-//        lastHit = false;
-//    }
-
     [[nodiscard]] bool checkLastHit() const {
         return lastHit;
     }
 
     [[nodiscard]] bool dead() const {
         return hp <= 0;
+    }
+
+    PowerUp(const PowerUp& other) = default;
+
+    PowerUp& operator=(PowerUp&& other) noexcept {
+        swap(*this, other);
+        return *this;
+    }
+
+    friend void swap(PowerUp& p1, PowerUp& p2) {
+        using std::swap;
+        swap(static_cast<Entity&>(p1), static_cast<Entity&>(p2));
+        swap(p1.type, p2.type);
+        swap(p1.lastHit, p2.lastHit);
     }
 };
