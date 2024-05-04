@@ -150,6 +150,8 @@ add_executable(${PROJECT_NAME}
         headers/PoweupController.h
         src/DumbEnemy.cpp
         src/SmartEnemy.cpp
+        headers/Portal.h
+        src/Portal.cpp
 )
 
 ###############################################################################

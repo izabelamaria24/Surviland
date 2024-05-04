@@ -133,6 +133,8 @@ void PlayerController::move(const EventData& eventData) {
             game.getBoard().update(x, y, '^');
         }
 
+        game.checkPortal();
+
         game.changeEnemiesDirection();
         game.moveEnemies();
         game.markEntities();

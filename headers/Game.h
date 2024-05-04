@@ -7,6 +7,7 @@
 #include "EventData.h"
 #include "Controller.h"
 #include "Exceptions.h"
+#include "Portal.h"
 
 #include <iostream>
 #include <memory>
@@ -31,6 +32,7 @@ private:
 
     std::vector<std::shared_ptr<Enemy>>enemies;
     std::vector<std::shared_ptr<PowerUp>> powerUps;
+    std::vector<std::shared_ptr<Portal>> portals;
     Board board;
     Player player;
 
@@ -66,6 +68,9 @@ public:
 
     void spawn();
 
+    void addPortal(const std::shared_ptr<Portal>& portal);
+    void checkPortal();
+
     /// observers methods
     void addObservers();
     void notifyObservers(EventData& eventData, const std::string& observerType);
@@ -93,6 +98,8 @@ public:
     void addPowerup(int x, int y, int hp, const std::string& type);
 
     void moveEnemies();
+
+    void markPortals();
 
     void drawSpell();
 

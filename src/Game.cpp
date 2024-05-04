@@ -27,8 +27,7 @@ void Game::notifyObservers(EventData &eventData, const std::string &observerType
 }
 
 std::pair<int, int> Game::generateCoordinates() {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
+    static std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
 
     int width = board.getWidth();
     int height = board.getHeight();
@@ -43,8 +42,7 @@ std::pair<int, int> Game::generateCoordinates() {
 }
 
 std::pair<int, int> Game::generateEnemyAttributes() {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
+    static std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> dis(1, 1);
 
     int hp = dis(gen), dmg = dis(gen);
@@ -52,8 +50,7 @@ std::pair<int, int> Game::generateEnemyAttributes() {
 }
 
 void Game::generateDirection(EventData& eventData) {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
+    static std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> dis(0, 3);
 
     int val = dis(gen);
@@ -75,8 +72,7 @@ void Game::generate(EventData& eventData) {
 }
 
 void Game::spawn() {
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::mt19937 gen(seed);
+    static std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
     std::uniform_int_distribution<int> dis(0, 99);
 
     int randomNum = dis(gen);
@@ -91,7 +87,8 @@ void Game::spawn() {
     int stopwatchThreshold = 85;
     int jackpotThreshold = 87;
     int dumbEnemyHoardThreshold = 92;
-    int smartEnemyHoardThreshold = 95;
+    int smartEnemyHoardThreshold = 96;
+    int portalThreshold = 99;
 
     EventData eventData;
     time++;
@@ -132,6 +129,12 @@ void Game::spawn() {
         eventData.name = "SWT";
         generate(eventData);
         notifyObservers(eventData, "Enemy");
+    } else if (randomNum < portalThreshold) {
+        std::pair<int, int>pair1 = generateCoordinates();
+        std::pair<int, int>pair2 = generateCoordinates();
+
+        std::shared_ptr<Portal> newPortal = std::make_shared<Portal>(pair1.first, pair1.second, pair2.first, pair2.second, 5);
+        addPortal(newPortal);
     }
 }
 
@@ -355,6 +358,11 @@ void Game::render(sf::RenderWindow& window) {
         throw TextureError("Can not load asset");
     }
 
+    sf::Texture portalTexture;
+    if (!portalTexture.loadFromFile("../assets/portal.png")) {
+        throw TextureError("Can not load asset");
+    }
+
   const int cellSize = 80;
     for (int i = 1; i <= board.getHeight(); ++i) {
         for (int j = 1; j <= board.getWidth(); ++j) {
@@ -398,6 +406,10 @@ void Game::render(sf::RenderWindow& window) {
                 } else {
                     throw CastError("Failed to cast Enemy into SmartEnemy or DumbEnemy");
                 }
+            }
+
+            else if (board.checkValue(j, i, 'p')) {
+                cell.setTexture(&portalTexture);
             }
 
             // powerups
@@ -519,6 +531,15 @@ void Game::markEnemies() {
         }
 }
 
+void Game::markPortals() {
+    for (const auto& portal : portals) {
+        if (!portal->destroyed()) {
+            board.update(portal->getX(), portal->getY(), 'p');
+            board.update(portal->getX2(), portal->getY2(), 'p');
+        }
+    }
+}
+
 void Game::moveEnemies() {
     if (player.checkTime()) return;
 
@@ -535,6 +556,24 @@ void Game::moveEnemies() {
             if (enemy->isAlive() && !board.checkValue(enemy->getX(), enemy->getY(), 'L')) {
                 player.decreaseHp(enemy->attackDamage());
             }
+        }
+    }
+}
+
+void Game::addPortal(const std::shared_ptr<Portal> &portal) {
+    portals.emplace_back(portal);
+}
+
+void Game::checkPortal() {
+    for (const auto& portal : portals) {
+        if (portal->getX() == player.getX() && portal->getY() == player.getY()) {
+            player.move(portal->getX2(), portal->getY2());
+            portal->use();
+            break;
+        } else if (portal->getX2() == player.getX() && portal->getY2() == player.getY()) {
+            player.move(portal->getX(), portal->getY());
+            portal->use();
+            break;
         }
     }
 }
@@ -736,6 +775,7 @@ void Game::markPowerUps() {
 
 void Game::markEntities() {
     markPowerUps();
+    markPortals();
     markEnemies();
 }
 

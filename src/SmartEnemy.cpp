@@ -16,13 +16,13 @@ void SmartEnemy::track(const Player &player) {
 }
 
 void SmartEnemy::changeDirection(Board &board, Player &player) {
-    std::cout << board.getWidth();
+    (void)board;
     track(player);
 }
 
 void SmartEnemy::goBack(Board &board, Player &player) {
-    std::cout << board.getWidth();
-    std::cout << player.getMoney();
+    (void)board;
+    (void)player;
     x = prevX;
     y = prevY;
 }
