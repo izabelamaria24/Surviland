@@ -152,6 +152,8 @@ add_executable(${PROJECT_NAME}
         src/SmartEnemy.cpp
         headers/Portal.h
         src/Portal.cpp
+        headers/ObstacleEnemy.h
+        src/ObstacleEnemy.cpp
 )
 
 ###############################################################################

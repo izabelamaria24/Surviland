@@ -16,7 +16,7 @@ void Menu::display() {
    window.setFramerateLimit(60);
 
   sf::Font font;
-  if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+  if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
      throw FontError("Could not load menu font!");
   }
 

@@ -2,6 +2,7 @@
 #include "../headers/Game.h"
 #include "../headers/DumbEnemy.h"
 #include "../headers/SmartEnemy.h"
+#include "../headers/ObstacleEnemy.h"
 
 void PlayerController::spellAttack() {
     int x = game.getPlayer().getX(), y = game.getPlayer().getY();
@@ -83,61 +84,61 @@ void PlayerController::attack() {
 }
 
 void PlayerController::move(const EventData& eventData) {
-        char dir = eventData.dir;
+    char dir = eventData.dir;
 
-        game.clearAttack();
-        game.healEnemies();
+    game.clearAttack();
+    game.healEnemies();
 
-        int x = game.getPlayer().getX(), y = game.getPlayer().getY();
+    int x = game.getPlayer().getX(), y = game.getPlayer().getY();
 
-        if (dir == 'L') {
-            if (!game.checkCollision(x, y - 1)) {
-                game.getBoard().update(x, y, '.');
-                if (y > 1) game.getPlayer().move(x, y - 1);
-            }
-
-            game.collectResources();
-            x = game.getPlayer().getX(), y = game.getPlayer().getY();
-            game.getBoard().update(x, y, '<');
+    if (dir == 'L') {
+        if (!game.checkCollision(x, y - 1)) {
+            game.getBoard().update(x, y, '.');
+            if (y > 1) game.getPlayer().move(x, y - 1);
         }
 
-        if (dir == 'R') {
-            if (!game.checkCollision(x, y + 1)) {
-                game.getBoard().update(x, y, '.');
-                if (y < game.getBoard().getWidth()) game.getPlayer().move(x, y + 1);
-            }
+        game.collectResources();
+        x = game.getPlayer().getX(), y = game.getPlayer().getY();
+        game.getBoard().update(x, y, '<');
+    }
 
-            game.collectResources();
-            x = game.getPlayer().getX(), y = game.getPlayer().getY();
-            game.getBoard().update(x, y, '>');
+    if (dir == 'R') {
+        if (!game.checkCollision(x, y + 1)) {
+            game.getBoard().update(x, y, '.');
+            if (y < game.getBoard().getWidth()) game.getPlayer().move(x, y + 1);
         }
 
-        if (dir == 'D') {
-            if (!game.checkCollision(x + 1, y)) {
-                game.getBoard().update(x, y, '.');
-                if (x < game.getBoard().getHeight()) game.getPlayer().move(x + 1, y);
-            }
+        game.collectResources();
+        x = game.getPlayer().getX(), y = game.getPlayer().getY();
+        game.getBoard().update(x, y, '>');
+    }
 
-            game.collectResources();
-            x = game.getPlayer().getX(), y = game.getPlayer().getY();
-            game.getBoard().update(x, y, 'v');
+    if (dir == 'D') {
+        if (!game.checkCollision(x + 1, y)) {
+            game.getBoard().update(x, y, '.');
+            if (x < game.getBoard().getHeight()) game.getPlayer().move(x + 1, y);
         }
 
-        if (dir == 'U') {
-            if (!game.checkCollision(x - 1, y)) {
-                game.getBoard().update(x, y, '.');
-                if (x > 1) game.getPlayer().move(x - 1, y);
-            }
-            game.collectResources();
-            x = game.getPlayer().getX(), y = game.getPlayer().getY();
-            game.getBoard().update(x, y, '^');
+        game.collectResources();
+        x = game.getPlayer().getX(), y = game.getPlayer().getY();
+        game.getBoard().update(x, y, 'v');
+    }
+
+    if (dir == 'U') {
+        if (!game.checkCollision(x - 1, y)) {
+            game.getBoard().update(x, y, '.');
+            if (x > 1) game.getPlayer().move(x - 1, y);
         }
+        game.collectResources();
+        x = game.getPlayer().getX(), y = game.getPlayer().getY();
+        game.getBoard().update(x, y, '^');
+    }
 
-        game.checkPortal();
+    game.checkPortal();
 
-        game.changeEnemiesDirection();
-        game.moveEnemies();
-        game.markEntities();
+    game.changeEnemiesDirection();
+    game.moveEnemies();
+    game.markEntities();
 }
 
 void PlayerController::upgrade(const EventData& eventData) {
@@ -180,14 +181,14 @@ void PlayerController::update(const EventData& eventData, const std::string& typ
 
 void EnemyController::spawnDumbEnemy(const EventData &eventData) {
     std::shared_ptr<Enemy> newEnemy = std::make_shared<DumbEnemy>(eventData.x, eventData.y, eventData.dmg,
-                                                                   eventData.hp, eventData.dir);
+                                                                  eventData.hp, eventData.dir);
     game.addEnemy(newEnemy);
     game.markEntities();
 }
 
 void EnemyController::spawnSmartEnemy(const EventData &eventData) {
     std::shared_ptr<Enemy> newEnemy = std::make_shared<SmartEnemy>(eventData.x, eventData.y, eventData.dmg,
-                                                                    eventData.hp, game.getBoard().getPlayer(game.getPlayer()));
+                                                                   eventData.hp, game.getBoard().getPlayer(game.getPlayer()));
     game.addEnemy(newEnemy);
     game.markEntities();
 }
@@ -247,6 +248,20 @@ void EnemyController::update(const EventData &eventData, const std::string& type
     if (eventData.name == "SWT") {
         spawnSmartEnemyHoard(eventData);
     }
+
+    if (eventData.name == "SO") {
+        spawnObstacle(eventData);
+    }
+}
+
+void EnemyController::spawnObstacle(const EventData &eventData) {
+    int xO= eventData.x, yO = eventData.y;
+
+    std::shared_ptr<Enemy> newEnemy = std::make_shared<ObstacleEnemy>(xO, yO);
+    game.addEnemy(newEnemy);
+
+    game.clearAttack();
+    game.markEntities();
 }
 
 void PowerUpController::spawnPowerup(const EventData &eventData) {
@@ -259,4 +274,3 @@ void PowerUpController::update(const EventData& eventData, const std::string& ty
     if (!(type == "PowerUp")) return;
     spawnPowerup(eventData);
 }
-

@@ -42,6 +42,8 @@ private:
 
     void spawnSmartEnemyHoard(const EventData& eventData);
 
+    void spawnObstacle(const EventData& eventData);
+
 public:
     explicit EnemyController(Game& game) : Observer(game){}
 

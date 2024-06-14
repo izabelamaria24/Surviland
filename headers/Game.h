@@ -109,6 +109,8 @@ public:
 
     void markEntities();
 
+    void markObstacles();
+
     void healEnemies();
 
     void changeEnemiesDirection();

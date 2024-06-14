@@ -1,6 +1,7 @@
 #include "../headers/Game.h"
 #include "../headers/SmartEnemy.h"
 #include "../headers/DumbEnemy.h"
+#include "../headers/ObstacleEnemy.h"
 
 void Game::addObservers() {
     observers.emplace_back(std::make_shared<PlayerController>(*this));
@@ -74,6 +75,7 @@ void Game::spawn() {
     int stopwatchThreshold = 85;
     int jackpotThreshold = 87;
     int dumbEnemyHoardThreshold = 92;
+    int obstacleThreshold = 94;
     int smartEnemyHoardThreshold = 96;
     int portalThreshold = 99;
 
@@ -111,8 +113,13 @@ void Game::spawn() {
     } else if (randomNum < dumbEnemyHoardThreshold) {
         eventData.name = "SWF";
         generate(eventData);
-        notifyObservers(eventData, "Enemy");
-    } else if (randomNum < smartEnemyHoardThreshold){
+        notifyObservers(eventData, "Enemy");}
+    else if (randomNum < obstacleThreshold) {
+        eventData.name = "SO";
+        generate(eventData);
+        notifyObservers(eventData, "Obstacle");
+    }
+    else if (randomNum < smartEnemyHoardThreshold){
         eventData.name = "SWT";
         generate(eventData);
         notifyObservers(eventData, "Enemy");
@@ -221,7 +228,7 @@ void Game::renderLose(sf::RenderWindow &window) {
 
 void Game::renderVictory(sf::RenderWindow& window) {
     sf::Font font;
-    if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+    if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
         throw FontError("Can not load font");
     }
 
@@ -230,7 +237,7 @@ void Game::renderVictory(sf::RenderWindow& window) {
     victoryText.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 4);
 
     sf::Texture victoryTexture;
-    if (!victoryTexture.loadFromFile("assets/trophy.png")) {
+    if (!victoryTexture.loadFromFile("../assets/trophy.png")) {
         throw TextureError("Can not load asset");
     }
 
@@ -255,98 +262,103 @@ std::shared_ptr<Enemy> Game::checkEnemy(int x, int y) {
 
 void Game::render(sf::RenderWindow& window) {
     sf::Font font;
-    if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+    if (!font.loadFromFile("../fonts/Roboto-Black.ttf")) {
         throw FontError("Can not load font");
     }
 
     // Load the background image
     sf::Texture playerTextureUp;
-    if (!playerTextureUp.loadFromFile("assets/up_penguin.png")) {
+    if (!playerTextureUp.loadFromFile("../assets/up_penguin.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture playerTextureDown;
-    if (!playerTextureDown.loadFromFile("assets/down_penguin.png")) {
+    if (!playerTextureDown.loadFromFile("../assets/down_penguin.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture playerTextureLeft;
-    if (!playerTextureLeft.loadFromFile("assets/left_penguin.png")) {
+    if (!playerTextureLeft.loadFromFile("../assets/left_penguin.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture playerTextureRight;
-    if (!playerTextureRight.loadFromFile("assets/right_penguin.jpg")) {
+    if (!playerTextureRight.loadFromFile("../assets/right_penguin.jpg")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture dumbEnemyTexture;
-    if (!dumbEnemyTexture.loadFromFile("assets/hogrider.png")) {
+    if (!dumbEnemyTexture.loadFromFile("../assets/hogrider.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture smartEnemyTexture;
-    if (!smartEnemyTexture.loadFromFile("assets/smartenemy.png")) {
+    if (!smartEnemyTexture.loadFromFile("../assets/smartenemy.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture spellTexture;
-    if (!spellTexture.loadFromFile("assets/spell.png")) {
+    if (!spellTexture.loadFromFile("../assets/spell.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture attackTexture;
-    if (!attackTexture.loadFromFile("assets/attack.png")) {
+    if (!attackTexture.loadFromFile("../assets/attack.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture deadEnemyTexture;
-    if (!deadEnemyTexture.loadFromFile("assets/dead.png")) {
+    if (!deadEnemyTexture.loadFromFile("../assets/dead.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture moneyTexture;
-    if (!moneyTexture.loadFromFile("assets/money.jpg")) {
+    if (!moneyTexture.loadFromFile("../assets/money.jpg")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture jackpotTexture;
-    if (!jackpotTexture.loadFromFile("assets/jackpot.jpg")) {
+    if (!jackpotTexture.loadFromFile("../assets/jackpot.jpg")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture stopwatchTexture;
-    if (!stopwatchTexture.loadFromFile("assets/stopwatch.jpg")) {
+    if (!stopwatchTexture.loadFromFile("../assets/stopwatch.jpg")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture armorTexture;
-    if (!armorTexture.loadFromFile("assets/armor.png")) {
+    if (!armorTexture.loadFromFile("../assets/armor.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture healTexture;
-    if (!healTexture.loadFromFile("assets/hp.png")) {
+    if (!healTexture.loadFromFile("../assets/hp.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture heartTexture;
-    if (!heartTexture.loadFromFile("assets/heart.png")) {
+    if (!heartTexture.loadFromFile("../assets/heart.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture emptyHeartTexture;
-    if (!emptyHeartTexture.loadFromFile("assets/empty_heart.png")) {
+    if (!emptyHeartTexture.loadFromFile("../assets/empty_heart.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture coinTexture;
-    if (!coinTexture.loadFromFile("assets/coin.png")) {
+    if (!coinTexture.loadFromFile("../assets/coin.png")) {
         throw TextureError("Can not load asset");
     }
 
     sf::Texture portalTexture;
-    if (!portalTexture.loadFromFile("assets/portal.png")) {
+    if (!portalTexture.loadFromFile("../assets/portal.png")) {
+        throw TextureError("Can not load asset");
+    }
+
+    sf::Texture obstacleTexture;
+    if (!obstacleTexture.loadFromFile("../assets/obstacle.png")) {
         throw TextureError("Can not load asset");
     }
 
@@ -397,6 +409,9 @@ void Game::render(sf::RenderWindow& window) {
 
             else if (board.checkValue(j, i, 'p')) {
                 cell.setTexture(&portalTexture);
+            }
+            else if (board.checkValue(j, i, 'o') ) {
+                cell.setTexture(&obstacleTexture);
             }
 
                 // powerups
@@ -523,6 +538,14 @@ void Game::markPortals() {
         if (!portal->destroyed()) {
             board.update(portal->getX(), portal->getY(), 'p');
             board.update(portal->getX2(), portal->getY2(), 'p');
+        }
+    }
+}
+
+void Game::markObstacles() {
+    for (const auto& obstacle : enemies) {
+        if (std::dynamic_pointer_cast<ObstacleEnemy>(obstacle)) {
+            board.update(obstacle->getX(), obstacle->getY(), 'o');
         }
     }
 }
@@ -763,6 +786,7 @@ void Game::markPowerUps() {
 void Game::markEntities() {
     markPowerUps();
     markPortals();
+    markObstacles();
     markEnemies();
 }
 
