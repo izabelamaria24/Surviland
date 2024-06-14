@@ -167,7 +167,9 @@ void PlayerController::upgrade(const EventData& eventData) {
     }
 }
 
-void PlayerController::update(const EventData& eventData) {
+void PlayerController::update(const EventData& eventData, const std::string& type) {
+    if (!(type == "Player")) return;
+
     if (eventData.name == "ATT")
         attack();
     if (eventData.name == "M")
@@ -227,7 +229,9 @@ void EnemyController::spawnSmartEnemyHoard(const EventData &eventData) {
     game.markEntities();
 }
 
-void EnemyController::update(const EventData &eventData) {
+void EnemyController::update(const EventData &eventData, const std::string& type) {
+    if (!(type == "Enemy")) return;
+
     if (eventData.name == "SF") {
         spawnDumbEnemy(eventData);
     }
@@ -251,7 +255,8 @@ void PowerUpController::spawnPowerup(const EventData &eventData) {
     game.markEntities();
 }
 
-void PowerUpController::update(const EventData& eventData) {
+void PowerUpController::update(const EventData& eventData, const std::string& type) {
+    if (!(type == "PowerUp")) return;
     spawnPowerup(eventData);
 }
 

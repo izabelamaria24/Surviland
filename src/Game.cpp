@@ -9,21 +9,8 @@ void Game::addObservers() {
 }
 
 void Game::notifyObservers(EventData &eventData, const std::string &observerType) {
-    for (const auto& observer : observers) {
-        if (observerType == "Player") {
-            if (auto playerObserver = std::dynamic_pointer_cast<PlayerController>(observer)) {
-                playerObserver->update(eventData);
-            }
-        } else if (observerType == "Enemy") {
-            if (auto enemyObserver = std::dynamic_pointer_cast<EnemyController>(observer)) {
-                enemyObserver->update(eventData);
-            }
-        } else if (observerType == "PowerUp") {
-            if (auto powerUpObserver = std::dynamic_pointer_cast<PowerUpController>(observer)) {
-                powerUpObserver->update(eventData);
-            }
-        }
-    }
+    for (const auto& observer : observers)
+        observer->update(eventData, observerType);
 }
 
 std::pair<int, int> Game::generateCoordinates() {

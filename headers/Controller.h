@@ -11,7 +11,7 @@ protected:
 public:
     explicit Observer(Game& game) : game(game){}
 
-    virtual void update(const EventData& eventData) = 0;
+    virtual void update(const EventData& eventData, const std::string& type) = 0;
 
     virtual ~Observer() = default;
 };
@@ -29,7 +29,7 @@ private:
 public:
     explicit PlayerController(Game& game) : Observer(game){}
 
-    void update(const EventData& eventData) override;
+    void update(const EventData& eventData, const std::string& type) override;
 };
 
 class EnemyController : public Observer {
@@ -45,7 +45,7 @@ private:
 public:
     explicit EnemyController(Game& game) : Observer(game){}
 
-    void update(const EventData& eventData) override;
+    void update(const EventData& eventData, const std::string& type) override;
 };
 
 class PowerUpController : public Observer {
@@ -55,5 +55,5 @@ private:
 public:
     explicit PowerUpController(Game& game) : Observer(game){}
 
-    void update(const EventData& eventData) override;
+    void update(const EventData& eventData, const std::string& type) override;
 };
