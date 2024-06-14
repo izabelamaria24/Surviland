@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "Exceptions.h"
 
 class Entity {
 protected:

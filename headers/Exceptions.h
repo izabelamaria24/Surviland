@@ -21,3 +21,8 @@ class CastError : public GameError {
 public:
     explicit CastError(const std::string& err) : GameError(err){}
 };
+
+class LogicError : public GameError {
+public:
+    explicit LogicError(const std::string&err) : GameError(err) {}
+};

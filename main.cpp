@@ -11,6 +11,8 @@ int main() {
         std::cerr << err.what();
     } catch(const FontError& err) {
         std::cerr << err.what();
+    } catch(const LogicError& err) {
+        std::cerr << err.what();
     } catch(const CastError& err) {
         std::cerr << err.what();
     }
