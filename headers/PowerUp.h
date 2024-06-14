@@ -37,16 +37,4 @@ public:
     }
 
     PowerUp(const PowerUp& other) = default;
-
-    PowerUp& operator=(PowerUp&& other) noexcept {
-        swap(*this, other);
-        return *this;
-    }
-
-    friend void swap(PowerUp& p1, PowerUp& p2) {
-        using std::swap;
-        swap(static_cast<Entity&>(p1), static_cast<Entity&>(p2));
-        swap(p1.type, p2.type);
-        swap(p1.lastHit, p2.lastHit);
-    }
 };

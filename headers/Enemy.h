@@ -38,19 +38,5 @@ public:
 
     Enemy(const Enemy& other) = default;
 
-    Enemy& operator=(Enemy&& other) noexcept {
-        swap(*this, other);
-        return *this;
-    }
-
-    friend void swap(Enemy& e1, Enemy& e2) {
-        using std::swap;
-        swap(static_cast<Entity&>(e1), static_cast<Entity&>(e2));
-        swap(e1.dmg, e2.dmg);
-        swap(e1.dir, e2.dir);
-        swap(e1.hit, e2.hit);
-        swap(e1.lastHit, e2.lastHit);
-    }
-
     [[nodiscard]] virtual std::shared_ptr<Enemy> clone() const = 0;
 };
