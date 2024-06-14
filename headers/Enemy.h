@@ -13,7 +13,7 @@ protected:
 public:
     Enemy(int x, int y) : Entity(x, y, 0), dmg(0), dir(' '), hit(false), lastHit(false) {}
     Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false), lastHit(false){
-        if (dmg > 15) throw LogicError("Enemy dmg is too high!");
+        if (dmg > 15) throw LogicError(std::string("Enemy dmg is too high!"));
     }
 
     virtual void changeDirection(Board& board, Player& player) = 0;

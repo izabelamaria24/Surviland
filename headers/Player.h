@@ -23,7 +23,7 @@ public:
                ability(-1), abilityRange(-1), unlockedSpell(false), availableAbilityUpgrades(-1), upgrade(-1), spellUpgrade(0) {};
     Player(int x, int y, int hp, int armor) : Entity(x, y, hp), level(1), armor(armor), totalMoney(0), spellFeature1(1), spellFeature2(1),
                     ability(1), abilityRange(1), unlockedSpell(false), availableAbilityUpgrades(0), upgrade(0), spellUpgrade(0) {
-        if (hp > 10) throw LogicError("Please provide valid player hp!");
+        if (hp > 10) throw LogicError(std::string("Please provide valid player hp!"));
     };
 
     void move(int x1, int y1);
