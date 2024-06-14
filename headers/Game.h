@@ -6,7 +6,6 @@
 #include "PowerUp.h"
 #include "EventData.h"
 #include "Controller.h"
-#include "Exceptions.h"
 #include "Portal.h"
 
 #include <iostream>
