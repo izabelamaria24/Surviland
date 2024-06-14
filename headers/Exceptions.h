@@ -24,5 +24,5 @@ public:
 
 class LogicError : public GameError {
 public:
-    explicit LogicError(const std::string&err) : GameError(err) {}
+    explicit LogicError(const std::string& err) : GameError(err) {}
 };

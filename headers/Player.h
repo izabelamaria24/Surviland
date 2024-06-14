@@ -71,7 +71,5 @@ public:
     [[nodiscard]] int getRange() const;
 
     void increaseAvailableUpgrades();
-
-    Player(const Player& other) = default;
 };
 

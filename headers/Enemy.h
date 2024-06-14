@@ -11,7 +11,7 @@ protected:
     bool lastHit;
 
 public:
-    Enemy(int x, int y) : Entity(x, y), dmg(0) {}
+    Enemy(int x, int y) : Entity(x, y, 0), dmg(0), dir(' '), hit(false), lastHit(false) {}
     Enemy(int x, int y, int hp, int dmg, char dir) : Entity(x, y, hp), dmg(dmg), dir(dir), hit(false), lastHit(false){
         if (dmg > 15) throw LogicError("Enemy dmg is too high!");
     }

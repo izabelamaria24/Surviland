@@ -9,7 +9,7 @@ void Game::addObservers() {
     observers.emplace_back(std::make_shared<PowerUpController>(*this));
 }
 
-void Game::notifyObservers(EventData &eventData, const std::string &observerType) {
+void Game::notifyObservers(const EventData &eventData, const std::string &observerType) {
     for (const auto& observer : observers)
         observer->update(eventData, observerType);
 }

@@ -21,7 +21,7 @@ class DumbEnemy;
 class SmartEnemy;
 
 class Game : public GameTemplate<Game> {
-  friend class GameTemplate<Game>;
+    friend class GameTemplate<Game>;
 
 private:
     std::vector<std::shared_ptr<Observer>> observers;
@@ -73,7 +73,7 @@ public:
 
     /// observers methods
     void addObservers();
-    void notifyObservers(EventData& eventData, const std::string& observerType);
+    void notifyObservers(const EventData& eventData, const std::string& observerType);
 
     Board& getBoard();
 
