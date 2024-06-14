@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <stdexcept>
 
 class GameError : public std::runtime_error
