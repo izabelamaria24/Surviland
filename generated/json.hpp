@@ -2399,11 +2399,11 @@ JSON_HEDLEY_DIAGNOSTIC_POP
     #define JSON_HAS_CPP_11
 #endif
 
-#ifdef __has_include
-    #if __has_include(<version>)
-        #include <version>
-    #endif
-#endif
+// #ifdef __has_include
+//     #if __has_include(<version>)
+//         #include <version>
+//     #endif
+// #endif
 
 #if !defined(JSON_HAS_FILESYSTEM) && !defined(JSON_HAS_EXPERIMENTAL_FILESYSTEM)
     #ifdef JSON_HAS_CPP_17
