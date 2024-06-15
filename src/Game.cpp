@@ -136,19 +136,50 @@ void Game::clearScreen(sf::RenderWindow& window) {
     window.clear();
 }
 
+std::string Game::getCurrentDate() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm now_tm = *std::localtime(&now_time_t);
+
+    std::ostringstream oss;
+    oss << std::put_time(&now_tm, "%Y-%m-%d");
+
+    return oss.str();
+}
+
+
 void Game::start(sf::RenderWindow& window) {
     window.setActive(true);
+    Parser parser;
 
     while (window.isOpen()) {
         update();
         if (checkVictory()) {
             win();
             renderVictory(window);
+
+            GameData data;
+            data.win = true;
+            data.level = player.getLevel();
+            data.ability = player.getAbility();
+            data.date = getCurrentDate();
+
+            parser.addGameData(data, "game_data.json");
+            return;
         }
 
         if (player.isDead()) {
             gameOver = true;
+
+            GameData data;
+            data.win = false;
+            data.level = player.getLevel();
+            data.ability = player.getAbility();
+            data.date = getCurrentDate();
+
+            parser.addGameData(data, "game_data.json");
             renderLose(window);
+            return;
         }
 
         sf::Event event{};
@@ -212,7 +243,7 @@ void Game::start(sf::RenderWindow& window) {
 
 void Game::renderLose(sf::RenderWindow &window) {
     sf::Texture loseTexture;
-    if (!loseTexture.loadFromFile("../assets/gameover.png")) {
+    if (!loseTexture.loadFromFile("assets/gameover.png")) {
         throw TextureError("Can not load asset");
     }
 
@@ -630,9 +661,6 @@ void Game::clearAttack() {
     int addX = checkPlayerDirection().first, addY = checkPlayerDirection().second;
     int newX = player.getX(), newY = player.getY();
 
-//    const int dx[] = {-1, 1, 0, 0};
-//    const int dy[] = {0, 0, -1, 1};
-
     for (int i = 1; i <= player.getAbility(); i++) {
         newX += addX;
         newY += addY;
@@ -744,7 +772,6 @@ void Game::collectResources() {
     if (board.checkHP(x, y)) collectHP();
     if (board.checkJackpot(x, y)) collectAllMoney();
 }
-
 
 void Game::changeEnemiesDirection() {
     for (auto& enemy: enemies) {

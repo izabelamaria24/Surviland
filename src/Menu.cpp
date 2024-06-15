@@ -1,5 +1,4 @@
 #include "../headers/Menu.h"
-#include "../headers/Game.h"
 
 void Menu::handlePlay(sf::RenderWindow& window) {
     Board board(10, 10);
@@ -11,16 +10,69 @@ void Menu::handlePlay(sf::RenderWindow& window) {
     game->start(window);
 }
 
+void Menu::handleStats(sf::RenderWindow& window) {
+    sf::Font font;
+    if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+        throw FontError("Could not load stats font!");
+    }
+
+    sf::Text statsTitle("Game Stats", font, 50);
+    statsTitle.setOrigin(statsTitle.getLocalBounds().width / 2, statsTitle.getLocalBounds().height / 2);
+    statsTitle.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 4);
+
+    sf::Text backOption("Back (B)", font, 35);
+    backOption.setOrigin(backOption.getLocalBounds().width / 2, backOption.getLocalBounds().height / 2);
+    backOption.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) - 100);
+
+    Parser parser;
+    std::vector<GameData> gameDataList = parser.loadGameData("game_data.json");
+
+    std::vector<sf::Text> statsTexts;
+    for (size_t i = 0; i < gameDataList.size(); ++i) {
+        sf::Text statsText("Level: " + std::to_string(gameDataList[i].level) + "\nAbility: " + std::to_string(gameDataList[i].ability) + "\nDate: " + gameDataList[i].date +
+                           "\nVictory: " + std::string(gameDataList[i].win ? "Yes" : "No"), font, 25);
+        statsText.setOrigin(statsText.getLocalBounds().width / 2, statsText.getLocalBounds().height / 2);
+        statsText.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 2 + static_cast<float>(i) * 60);
+        statsTexts.push_back(statsText);
+    }
+
+    while (window.isOpen()) {
+        sf::Event event{};
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            } else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::B) {
+                    display();
+                    return;
+                } else if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
+            }
+        }
+
+        window.clear();
+
+        window.draw(statsTitle);
+        for (const auto& statsText : statsTexts)
+            window.draw(statsText);
+
+        window.draw(backOption);
+
+        window.display();
+    }
+}
+
+
 void Menu::display() {
-   sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Surviland", sf::Style::Fullscreen);
-   window.setFramerateLimit(60);
+    sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Surviland", sf::Style::Fullscreen);
+    window.setFramerateLimit(60);
 
-  sf::Font font;
-  if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
-     throw FontError("Could not load menu font!");
-  }
+    sf::Font font;
+    if (!font.loadFromFile("fonts/Roboto-Black.ttf")) {
+        throw FontError("Could not load menu font!");
+    }
 
-  // game title
     sf::Text title("Surviland", font, 100);
     title.setOrigin(title.getLocalBounds().width / 2, title.getLocalBounds().height / 2);
     title.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 4);
@@ -34,7 +86,6 @@ void Menu::display() {
     statsOption.setPosition(static_cast<float>(window.getSize().x) / 2, static_cast<float>(window.getSize().y) / 2 + 60);
 
     while (window.isOpen()) {
-        // Handle events
         sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -44,26 +95,25 @@ void Menu::display() {
                     handlePlay(window);
                     return;
                 } else if (event.key.code == sf::Keyboard::S) {
-                    // TODO STATS
+                    handleStats(window);
+                    return;
                 } else if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
             }
         }
 
-        // Clear the window
         window.clear();
 
-        // Draw the title text
         window.draw(title);
         window.draw(playOption);
         window.draw(statsOption);
 
-        // Display the contents of the window
         window.display();
     }
 }
 
-void Menu::init() { 
-  display();
+
+void Menu::init() {
+    display();
 }

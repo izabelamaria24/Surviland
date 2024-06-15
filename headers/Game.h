@@ -1,19 +1,22 @@
 #pragma once
 
-#include "GameTemplate.h"
 #include "Board.h"
-#include "Player.h"
-#include "PowerUp.h"
-#include "EventData.h"
 #include "Controller.h"
+#include "GameTemplate.h"
+#include "EventData.h"
+#include "Player.h"
 #include "Portal.h"
+#include "PowerUp.h"
+#include "Parser.h"
 
+#include <algorithm>
+#include <chrono>
+#include <ctime>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <random>
 #include <string>
-#include <chrono>
-#include <algorithm>
 
 class Enemy;
 class DumbEnemy;
@@ -123,6 +126,8 @@ public:
     [[nodiscard]] bool checkCollision(int x, int y) const;
 
     bool borders (int x, int y);
+
+    static std::string getCurrentDate();
 
     ~Game() override = default;
 };

@@ -1,6 +1,10 @@
 
 #pragma once
-#include "./GameTemplate.h"
+
+#include "GameTemplate.h"
+#include "Game.h"
+
+struct GameData;
 
 class Menu : public GameTemplate<Menu> {
   friend class GameTemplate<Menu>;
@@ -9,6 +13,8 @@ class Menu : public GameTemplate<Menu> {
     Menu() = default;
 
     static void handlePlay(sf::RenderWindow& window);
+    static void handleStats(sf::RenderWindow& window);
+
     static void display();
     
   public:

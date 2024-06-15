@@ -154,6 +154,10 @@ add_executable(${PROJECT_NAME}
         src/Portal.cpp
         headers/ObstacleEnemy.h
         src/ObstacleEnemy.cpp
+        generated/json.hpp
+        headers/GameData.h
+        headers/Parser.h
+        src/Parser.cpp
 )
 
 ###############################################################################
