@@ -1,6 +1,5 @@
 
 #include "./headers/Menu.h"
-#include "./headers/Exceptions.h"
 #include <iostream>
 
 int main() {
