@@ -16,6 +16,7 @@
 #include <iostream>
 #include <memory>
 #include <random>
+#include <sstream>
 #include <string>
 
 class Enemy;
