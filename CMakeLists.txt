@@ -142,6 +142,7 @@ add_executable(${PROJECT_NAME}
         headers/Exceptions.h
         src/Board.cpp
         src/Player.cpp
+        headers/Player.h
         src/Enemy.cpp
         headers/DumbEnemy.h
         headers/SmartEnemy.h
