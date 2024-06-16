@@ -1,5 +1,6 @@
 #include <string>
-#include "../generated/include/json.hpp"
+
+#include <nlohmann/json.hpp>
 
 struct GameData {
     int level;

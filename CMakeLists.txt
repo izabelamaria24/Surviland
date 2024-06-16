@@ -102,7 +102,13 @@ FetchContent_Declare(
   GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
 )
 
+FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json
+        GIT_TAG v3.11.3
+)
 
+FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(SFML)
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
@@ -155,7 +161,6 @@ add_executable(${PROJECT_NAME}
         src/Portal.cpp
         headers/ObstacleEnemy.h
         src/ObstacleEnemy.cpp
-        generated/include/json.hpp
         headers/GameData.h
         headers/Parser.h
         src/Parser.cpp
@@ -195,8 +200,10 @@ set_custom_stdlib_and_sanitizers(${PROJECT_NAME} true)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE generated/include)
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${json_SOURCE_DIR}/include)
 target_link_directories(${PROJECT_NAME} PRIVATE ${SFML_BINARY_DIR}/lib)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json)
 
 if(APPLE)
 elseif(UNIX)
